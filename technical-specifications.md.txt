@@ -1,0 +1,173 @@
+# Hissaback Platform – Technical Specifications v1.0
+
+## 1. High‑Level ER Diagram (PostgreSQL 15)
+
+```
+TENANT { tenant_id PK, name, logo_url, trackier_pid, custom_domain, default_share_pct }
+│1
+└──< CAMPAIGN { campaign_id PK, tenant_id FK, name, share_pct, status }
+       │1
+       ├──< LINK { link_id PK, campaign_id FK, offer_id FK, slug }
+       │    │1
+       │    └──< CLICK { click_id PK, link_id FK, user_id FK NULL, ts_click }
+       │            │1
+       │            └──< CONVERSION { conv_id PK, click_id FK, order_value, ts_conv, net_commission }
+       │                           │1
+       │                           └──< LEDGER { led_id PK, conv_id FK, user_pct, user_amount, creator_amount, status }
+       │
+       └──< WIDGET { widget_id PK, campaign_id FK, config_json }
+USER { user_id PK, phone, email, kyc_hash }
+PAYOUT { payout_id PK, user_id FK, amount, method, voucher_code, ts_paid }
+OFFER { offer_id PK, brand, sku, category, base_commission_pct, cool_off_days }
+```
+*Cardinality key: 1 = one, < = many.*
+
+## 2. Database Schema (PostgreSQL 15)
+
+| Table | Key Columns | Indexes |
+|-------|-------------|---------|
+| tenants | tenant_id UUID PK, trackier_pid VARCHAR UNIQUE | btree(trackier_pid) |
+| offers | offer_id INT PK, brand, category, cool_off_days INT DEFAULT 30 | btree(category) |
+| campaigns | campaign_id UUID PK, tenant_id FK, share_pct NUMERIC(5,2) | btree(tenant_id) |
+| links | link_id UUID PK, slug, campaign_id FK, offer_id FK | btree(slug) |
+| clicks | click_id BIGINT PK, link_id FK, created_at TIMESTAMPTZ | btree(link_id) |
+| conversions | conv_id BIGINT PK, click_id FK, order_value NUMERIC, created_at | btree(click_id) |
+| ledger | led_id BIGINT PK, conv_id FK, user_amount, creator_amount, status | btree(status) |
+| users | user_id UUID PK, phone, email | btree(phone) |
+| payouts | payout_id UUID PK, user_id FK, method, voucher_code, paid_at | btree(user_id) |
+
+### Partitioning Strategy
+- **Clicks & Conversions**: Monthly time‑range partitions
+- **Ledger**: Hash‑partition on tenant_id then sub‑partition by quarter
+- Expected to sustain 200K conversions/day without hot‑spotting
+
+## 3. REST API Endpoints (v1)
+
+| # | Method & Path | Request Body/Query | Response (200) |
+|---|---------------|-------------------|----------------|
+| 1 | POST /v1/auth/otp/request | { phone } | { request_id } |
+| 2 | POST /v1/auth/otp/verify | { request_id, code } | { jwt } |
+| 3 | GET /v1/offers | ?tenant_id&category= | [{ offer_id, brand, commission_pct }] |
+| 4 | POST /v1/campaigns | { tenant_id, name, share_pct } | { campaign_id } |
+| 5 | POST /v1/links | { campaign_id, offer_id } | { link_id, smart_link } |
+| 6 | GET /v1/analytics/creator | ?tenant_id&period=30d | { clicks, conversions, earnings, shared } |
+| 7 | POST /v1/events/click | { link_id, user_id? } | { click_id } |
+| 8 | POST /v1/events/conversion | (Trackier webhook) | { status:"ok" } |
+| 9 | POST /v1/rewards/payout/run | Cron‑only JWT | { paid_count } |
+| 10 | GET /v1/rewards/user | ?user_id | [{ amount, status, eta }] |
+
+*All endpoints secured with Bearer JWT; creator tokens scoped per tenant.*
+
+## 4. Security & Authentication
+
+### JWT Strategy
+- **Access Token**: 24h expiry
+- **Refresh Token**: httpOnly cookie, 30d expiry
+- **Refresh Endpoint**: Rotates token & stores jti blacklist in Redis (TTL = 30d)
+
+### Rate Limiting (API Gateway)
+- **Public endpoints**: 100 req/min/IP
+- **OTP endpoints**: 5 req/hour/phone
+- **Webhook intake**: Allowlist Trackier IPs; no rate cap
+
+### Multi-Tenant Isolation
+- **Row-Level Security (RLS)** in PostgreSQL: `tenant_id = current_setting('app.tenant')`
+- **API Gateway** injects setting per request after validating JWT claims
+- **Separate S3 prefixes** per tenant for static assets
+
+## 5. Error Handling Playbook
+
+| Scenario | Logic | Escalation |
+|----------|-------|------------|
+| Webhook fails (5xx on our side) | Trackier retries × 5 with exponential back‑off; we also pull daily reconciliation CSV | If dead‑letter queue > 1,000 msgs, page Ops |
+| Webhook payload bad/missing click | Return 200 OK + "ignored":true; write to unmatched_conversions table for offline audit | Manual review via dashboard |
+| AGCOD API 4xx (bad param) | Mark payout row error_hard; Ops dashboard shows "action needed" | Immediate operator intervention |
+| AGCOD API 5xx/timeout | Retry 3‑5‑15 min back‑off (max 10 attempts). If still failing after 6h → status error_soft; nightly job will retry | Auto-recovery with monitoring |
+| User‑facing errors | Generic toast: "We're verifying your purchase, rewards usually confirm within 24–48h. You'll be notified automatically." | No technical jargon exposed |
+
+## 6. Performance & Scaling Targets
+
+### Concurrent User Targets
+- **Small creator**: ≤ 500 concurrent users
+- **Tier‑1 brand**: ≤ 10,000 concurrent users  
+- **Global infrastructure**: 500k concurrent users overall
+
+### SLA Requirements
+- **Webhook processing**: 99% of Trackier postbacks processed & ledgered within ≤ 5s P95
+- **Edge redirect latency**: ≤ 50ms global (Cloudflare Worker, KV cache for link lookup)
+
+### Autoscaling Rules
+- **Scale up**: CPU > 70% OR queue lag > 1 min → add replica
+- **Scale down**: CPU < 30% for 15 min → remove replica
+
+## 7. Technology Stack
+
+| Layer | Choice | Rationale |
+|-------|--------|-----------|
+| Backend | FastAPI (Python 3.12) | High async I/O, easy Pydantic validation |
+| Worker Jobs | Celery + Redis | Straightforward cron & retry semantics |
+| Database | PostgreSQL 15 | ACID ledger; partitionable |
+| Message Bus | RabbitMQ | Decouples webhook intake & ledger updates |
+| Frontend (Admin & Hosted) | Next.js 15 (React 18) | SSR for SEO on hosted pages |
+| Widget | Vanilla JS + Web Components | ≤ 50 KB, framework‑agnostic |
+| Containerisation | Docker + Kubernetes (EKS) | Auto‑scaling, blue‑green deploy |
+| Edge Redirect | Cloudflare Worker | <50 ms global TTFB |
+| Observability | Prometheus + Grafana + Sentry | Metrics + tracing + errors |
+
+**CI/CD**: GitHub Actions → ECR → Argo CD
+
+## 8. External Integrations
+
+### 8.1 Trackier API
+**Offer Sync**:
+```
+GET https://api.trackier.com/v1/advertisers/offers?api_key=XXXX
+```
+Parse: id, category, preview_url, payout
+
+**Postback/Conversion**:
+```
+https://hissaback.app/v1/events/conversion?
+  click_id={click_id}&
+  offer_id={offer_id}&
+  sale_amount={sale_amount}&
+  status={status}
+```
+
+### 8.2 Amazon Gift Voucher (AGCOD) API
+**CreateGiftCard**:
+```
+POST /gc/v1/giftCard/create (signed AWS REST)
+Body: { amount, creationRequestId, partnerId } → returns claimCode
+```
+- Min batch: 1
+- Max value: ₹10,000
+- Store claimCode encrypted until payout SMS fires
+
+## 9. Deployment Architecture
+
+```
+ User ──► [Cloudflare Worker] ─redirect─► Merchant
+   │                 │log click
+   ▼                 ▼
+Hosted Page/Widget   [API Gateway]──Auth/OTP
+                          │
+        Next.js SSR <── Offer & Campaign Svc
+                          │
+                      Ledger Svc ───▶ Postgres
+                          │
+                      Celery Worker ───▶ AGCOD
+                          │
+                      Prometheus ↔ Grafana
+```
+
+## 10. Anti-Fraud Configuration
+
+All fraud rules configurable via admin panel:
+
+1. **Self‑purchase detection**: Auto-reject when creator phone/email = user
+2. **Velocity limits**: ≥ 5 conversions per user/24h → manual review queue
+3. **Duplicate prevention**: Reject duplicate order-ID within 30d
+4. **Geographic scoring**: Click/conversion country mismatch → +1 score (threshold 3 = review)
+
+*Covers 90% of abuse patterns from historical data analysis.* 

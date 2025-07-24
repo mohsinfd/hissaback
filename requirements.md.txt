@@ -1,0 +1,61 @@
+# Hissaback Platform – Requirements
+
+## Purpose
+Let any creator or brand share a piece of their affiliate commission with end‑users, without forcing traffic through a single landing site.
+
+## Core Personas
+| Persona | Goal | Success Signal |
+|---------|------|----------------|
+| Creator – No‑Code | Generate link in < 2 min | First payout received |
+| Creator – Semi‑Tech | Embed cashback widget on own domain | Widget CTR ≥ 15 % |
+| Brand / Full‑Stack | API + custom domain | Keeps ≥ 70 % traffic on domain |
+| End‑User | Clear reward promise, quick claim | NPS ≥ 55 |
+| Admin | Low‑touch onboarding | < 30 min setup per tenant |
+
+## Business Logic Defaults & Rules
+
+### Core Parameters
+| Parameter | Decision | Rationale |
+|-----------|----------|-----------|
+| Cool‑off period | 30 days after merchant marks an order "approved." Field: cool_off_days on each offer (overrideable ± 15 d). | Majority of Trackier merchants validate within 15‑25 d; 30 keeps buffer. |
+| Minimum payout | ₹ 10 net to user (post‑split). | Below ₹ 10 Amazon GV codes hurt UX & raise cost/tx. |
+
+### Fraud Rules v1
+1. **Self‑purchase**: creator phone/email = user → auto‑reject
+2. **Velocity**: ≥ 5 conversions per user / 24 h → queue for manual review
+3. **Duplicate order‑ID**: within 30 d → reject
+4. **IP mismatch**: click & conversion country differ → score +1 (threshold 3 = review)
+
+*Rationale: Covers 90% abuse patterns seen in CK/EK data. All thresholds configurable in "Anti‑Fraud" admin panel.*
+
+## Epics & Acceptance Criteria
+| Epic | AC (Gherkin Style) |
+|------|--------------------|
+| **E1: Creator Onboarding** | Given a new email/phone, when the creator signs up & sets a default share %, then a `tenant_id` and `trackier_pid` mapping must exist in DB. |
+| **E2: Catalogue Sync** | Given Trackier API keys, when nightly job runs, then `offers` table contains all active offers with correct `offer_id`. |
+| **E3: Campaign Builder** | Given a tenant & selected offers, when share % is set, then system returns a smart‑link or widget snippet within 2 s. |
+| **E4: End‑User Verification** | Given a phone number, when OTP is entered, then JWT token valid for 24 h is issued. |
+| **E5: Conversion Ledger** | Given Trackier webhook payload, when offer + pid match, then ledger row is created with `status=queued`. |
+| **E6: Payout Engine** | Given queued rewards older than cool‑off, when payout job runs, then user receives Amazon GV code and ledger status becomes `paid`. |
+| **E7: Dashboards** | Given creator dashboard, when filters applied, then data loads in < 1 s P95. |
+
+## Out of Scope (MVP)
+* Tiered share slabs  
+* Non‑affiliate revenue (ads, subs)  
+* Multi‑currency payouts
+
+## Milestones
+| Sprint | Deliverable |
+|--------|-------------|
+| 1 | Data models, mock DB, onboarding.flow, onboarding.test |
+| 2 | campaign‑builder.flow, catalogue mock, tests |
+| 3 | user‑journey.flow (widget + hosted), OTP stub |
+| 4 | conversion‑intake.flow, ledger logic |
+| 5 | payout.flow, Amazon GV stub, tests |
+| 6 | Dashboards, custom domain wizard, 3‑creator beta |
+
+## KPIs
+* Creators live in 90 d – 100  
+* Avg share % – ≥ 30 %  
+* Purchase → payout time – ≤ 45 d  
+* Fraud loss – < 0.3 % of GMV

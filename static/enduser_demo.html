@@ -1,0 +1,81 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Hissaback End-User Demo</title>
+  <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;600&display=swap" rel="stylesheet">
+  <link href="https://cdn.jsdelivr.net/npm/tailwindcss@2.2.19/dist/tailwind.min.css" rel="stylesheet">
+  <style>
+    body { font-family: 'Inter', sans-serif; }
+    .brand-img { width: 60px; height: 60px; border-radius: 12px; object-fit: cover; }
+  </style>
+</head>
+<body class="bg-gray-50">
+  <div class="max-w-lg mx-auto mt-10 bg-white rounded-lg shadow p-8">
+    <div class="mb-6 text-center">
+      <img src="https://logo.clearbit.com/flipkart.com" alt="Brand" class="brand-img mx-auto mb-2">
+      <h1 class="text-2xl font-bold text-blue-600 mb-1">Hissaback End-User Demo</h1>
+      <div class="text-xs text-gray-400">Simulated journey: Smart Link → OTP → Reward</div>
+    </div>
+    <div id="step-smartlink" class="mb-6">
+      <div class="text-lg font-semibold mb-2">1. Clicked a Smart Link</div>
+      <div class="text-gray-600 mb-2">Offer: <span class="font-bold">10% Cashback on Electronics</span> at <span class="font-bold">Flipkart</span></div>
+      <button id="btn-continue" class="bg-blue-600 text-white px-4 py-2 rounded hover:bg-blue-700">Continue</button>
+    </div>
+    <div id="step-otp" class="mb-6 hidden">
+      <div class="text-lg font-semibold mb-2">2. Verify Your Identity</div>
+      <div class="text-gray-600 mb-2">Enter your phone number to receive an OTP:</div>
+      <input id="input-phone" type="text" placeholder="Enter phone number" class="border rounded px-3 py-2 w-full mb-2">
+      <button id="btn-send-otp" class="bg-blue-600 text-white px-4 py-2 rounded hover:bg-blue-700 w-full">Send OTP</button>
+      <div id="otp-sent-msg" class="text-green-600 text-sm mt-2 hidden">OTP sent! Please check your phone.</div>
+      <div id="otp-entry" class="mt-4 hidden">
+        <input id="input-otp" type="text" placeholder="Enter OTP" class="border rounded px-3 py-2 w-full mb-2">
+        <button id="btn-verify-otp" class="bg-green-600 text-white px-4 py-2 rounded hover:bg-green-700 w-full">Verify OTP</button>
+      </div>
+    </div>
+    <div id="step-reward" class="mb-6 hidden">
+      <div class="text-lg font-semibold mb-2">3. Reward Status</div>
+      <div class="text-gray-600 mb-2">Congratulations! Your purchase is tracked.</div>
+      <div class="mb-2">Reward: <span class="font-bold text-green-600">₹500 Cashback</span></div>
+      <div class="w-full bg-gray-200 rounded-full h-3 mb-2">
+        <div class="bg-green-500 h-3 rounded-full" style="width: 60%"></div>
+      </div>
+      <div class="text-xs text-gray-500 mb-2">Status: <span class="font-bold text-yellow-600">Pending Confirmation</span></div>
+      <button id="btn-notify" class="bg-purple-600 text-white px-4 py-2 rounded hover:bg-purple-700">Notify Me When Paid</button>
+    </div>
+    <div id="notification-area" class="mt-4"></div>
+  </div>
+  <script>
+    // Simple demo flow logic
+    document.getElementById('btn-continue').onclick = function() {
+      document.getElementById('step-smartlink').classList.add('hidden');
+      document.getElementById('step-otp').classList.remove('hidden');
+    };
+    document.getElementById('btn-send-otp').onclick = function() {
+      var phone = document.getElementById('input-phone').value;
+      if(phone.length < 8) {
+        alert('Please enter a valid phone number.');
+        return;
+      }
+      document.getElementById('otp-sent-msg').classList.remove('hidden');
+      setTimeout(function() {
+        document.getElementById('otp-entry').classList.remove('hidden');
+      }, 800);
+    };
+    document.getElementById('btn-verify-otp').onclick = function() {
+      var otp = document.getElementById('input-otp').value;
+      if(otp !== '1234') {
+        alert('Demo: Enter 1234 as OTP.');
+        return;
+      }
+      document.getElementById('step-otp').classList.add('hidden');
+      document.getElementById('step-reward').classList.remove('hidden');
+    };
+    document.getElementById('btn-notify').onclick = function() {
+      var area = document.getElementById('notification-area');
+      area.innerHTML = '<div class="bg-green-100 text-green-700 p-3 rounded mt-2">You will be notified when your cashback is paid! (Demo only)</div>';
+    };
+  </script>
+</body>
+</html> 

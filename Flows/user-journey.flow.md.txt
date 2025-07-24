@@ -1,0 +1,35 @@
+# Flow: User Journey (Smart-Link to Conversion)
+
+1. **Entry Point** – User lands via smart‑link (clicked from creator's content/social).
+
+2. **Landing Page Render** – Page displays:
+   * Product details & merchant branding
+   * "Get ₹X back" banner (calculated from campaign share_pct)
+   * Clear CTA: "Claim Reward & Shop"
+
+3. **Reward Claim Flow**:
+   * User clicks "Claim Reward" 
+   * OTP modal appears requesting phone number
+   * System calls `/v1/auth/otp/request`
+   * User enters OTP code
+   * System calls `/v1/auth/otp/verify` → returns JWT
+
+4. **Redirect to Merchant**:
+   * Page auto‑redirects to merchant (deep‑link if mobile)
+   * Background beacon posts to `/v1/events/click` with link_id & user_id
+   * Thank‑you toast: "Continue shopping; we'll message you when cashback is confirmed"
+
+5. **Purchase & Conversion**:
+   * User completes purchase on merchant site
+   * Trackier fires postback to `/v1/events/conversion`
+   * System processes conversion and creates ledger entry
+
+6. **Reward Confirmation**:
+   * After cool‑off period (30 days default)
+   * Payout job runs, sends Amazon GV code via SMS/email
+   * User receives voucher code
+
+**Success Metrics**:
+* Click‑to‑redirect rate ≥ 80%
+* OTP completion rate ≥ 60%
+* Time on landing page ≤ 30s average 

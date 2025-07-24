@@ -1,0 +1,16 @@
+hissaback‑platform/
+├─ requirements.md          ← Master doc (see §1)
+├─ todos.csv                ← Kanban‑style backlog (see §2)
+├─ data/
+│  ├─ tenants.mock.json     ← Seed data for creators
+│  └─ offers.mock.json      ← Sample Trackier catalogue
+├─ flows/                   ← No‑code diagrams / step lists
+│  ├─ onboarding.flow.md
+│  ├─ campaign‑builder.flow.md
+│  ├─ user‑journey.flow.md
+│  ├─ conversion‑intake.flow.md
+│  └─ payout.flow.md
+└─ tests/
+   ├─ onboarding.test.md
+   ├─ conversion‑ledger.test.md
+   └─ payout.test.md

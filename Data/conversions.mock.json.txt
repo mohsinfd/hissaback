@@ -1,0 +1,38 @@
+[
+  {
+    "conv_id": 200001,
+    "click_id": 100001,
+    "order_id": "FKT_ORD_789123",
+    "order_value": 2499.00,
+    "ts_conv": "2024-01-15T11:15:00Z",
+    "net_commission": 149.94,
+    "status": "confirmed"
+  },
+  {
+    "conv_id": 200002, 
+    "click_id": 100002,
+    "order_id": "AMZ_ORD_456789",
+    "order_value": 1299.00,
+    "ts_conv": "2024-01-15T12:30:00Z",
+    "net_commission": 64.95,
+    "status": "confirmed"
+  },
+  {
+    "conv_id": 200003,
+    "click_id": 100004,
+    "order_id": "FKT_ORD_321654", 
+    "order_value": 899.00,
+    "ts_conv": "2024-01-15T15:45:00Z",
+    "net_commission": 53.94,
+    "status": "pending"
+  },
+  {
+    "conv_id": 200004,
+    "click_id": 100005,
+    "order_id": "AMZ_ORD_987321",
+    "order_value": 3599.00,
+    "ts_conv": "2024-01-15T17:20:00Z", 
+    "net_commission": 179.95,
+    "status": "confirmed"
+  }
+] 

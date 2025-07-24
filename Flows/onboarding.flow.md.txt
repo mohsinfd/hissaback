@@ -1,0 +1,16 @@
+# Flow: Creator Onboarding (MVP)
+
+1. **Trigger** – “Sign‑up” button on public splash page.  
+2. **Step: Collect Details** – Modal asking `Name`, `Email`, `Phone`, `Brand Name (optional)`.  
+3. **Step: Verify Phone** – Call `/otp/request`; on success, `/otp/verify`.  
+4. **Step: Create Tenant** – Write to `tenants` table → return `tenant_id`.  
+5. **Step: Map Trackier PID** – Auto‑increment `pid` or let creator paste existing.  
+6. **Step: Pick Default Share %** – Slider (10 – 90 %); store on tenant.  
+7. **Output** – Success screen with quick‑start:  
+   * “Create first campaign” CTA (deep link to campaign‑builder flow)  
+   * API key displayed but copy‑protected.  
+8. **Callback** – Emit event `creator.onboarded` → Slack Webhook “New Creator 🚀”.
+
+_Notes:_  
+* Use mock JSON for DB ops during dummy run.  
+* Expected duration: < 2 min user time.

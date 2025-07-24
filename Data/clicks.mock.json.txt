@@ -1,0 +1,42 @@
+[
+  {
+    "click_id": 100001,
+    "link_id": "lnk_abc123",
+    "user_id": "usr_001", 
+    "ts_click": "2024-01-15T10:30:00Z",
+    "ip_address": "203.192.12.45",
+    "user_agent": "Mozilla/5.0 (iPhone; CPU iPhone OS 17_0 like Mac OS X)"
+  },
+  {
+    "click_id": 100002,
+    "link_id": "lnk_def456", 
+    "user_id": "usr_002",
+    "ts_click": "2024-01-15T11:45:00Z",
+    "ip_address": "122.176.89.34",
+    "user_agent": "Mozilla/5.0 (Linux; Android 13; SM-G991B)"
+  },
+  {
+    "click_id": 100003,
+    "link_id": "lnk_abc123",
+    "user_id": null,
+    "ts_click": "2024-01-15T12:15:00Z", 
+    "ip_address": "157.48.231.67",
+    "user_agent": "Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36"
+  },
+  {
+    "click_id": 100004,
+    "link_id": "lnk_ghi789",
+    "user_id": "usr_003",
+    "ts_click": "2024-01-15T14:20:00Z",
+    "ip_address": "203.192.12.45", 
+    "user_agent": "Mozilla/5.0 (Macintosh; Intel Mac OS X 10_15_7)"
+  },
+  {
+    "click_id": 100005,
+    "link_id": "lnk_def456",
+    "user_id": "usr_004",
+    "ts_click": "2024-01-15T16:30:00Z",
+    "ip_address": "106.51.78.92",
+    "user_agent": "Mozilla/5.0 (iPad; CPU OS 17_0 like Mac OS X)"
+  }
+] 

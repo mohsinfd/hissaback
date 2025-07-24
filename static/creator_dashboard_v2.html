@@ -1,0 +1,840 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Hissaback Creator Dashboard v2 (Live Demo)</title>
+  <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;600&display=swap" rel="stylesheet">
+  <link href="https://cdn.jsdelivr.net/npm/tailwindcss@2.2.19/dist/tailwind.min.css" rel="stylesheet">
+  <style>
+    body { font-family: 'Inter', sans-serif; }
+    .brand-img { width: 36px; height: 36px; border-radius: 8px; object-fit: cover; }
+    .loading { opacity: 0.6; pointer-events: none; }
+    .success-msg { color: #059669; }
+    .error-msg { color: #dc2626; }
+    .loading-spinner { 
+      display: inline-block; 
+      width: 16px; 
+      height: 16px; 
+      border: 2px solid #f3f3f3; 
+      border-top: 2px solid #3498db; 
+      border-radius: 50%; 
+      animation: spin 1s linear infinite; 
+    }
+    @keyframes spin {
+      0% { transform: rotate(0deg); }
+      100% { transform: rotate(360deg); }
+    }
+  </style>
+</head>
+<body class="bg-gray-50">
+  <div class="flex min-h-screen">
+    <!-- Sidebar -->
+    <aside class="bg-white shadow-md w-56 flex flex-col p-6">
+      <div class="mb-8">
+        <span class="text-2xl font-bold text-blue-600">Hissaback</span>
+        <div class="text-xs text-gray-400">Creator Dashboard v2 (Live Demo)</div>
+      </div>
+      <nav class="flex-1 space-y-4">
+        <a href="#dashboard" class="block py-2 px-3 rounded hover:bg-blue-50 font-medium">Dashboard</a>
+        <a href="#campaigns" class="block py-2 px-3 rounded hover:bg-blue-50 font-medium">Campaigns</a>
+        <a href="#offers" class="block py-2 px-3 rounded hover:bg-blue-50 font-medium">Offers</a>
+        <a href="#rewards" class="block py-2 px-3 rounded hover:bg-blue-50 font-medium">Rewards</a>
+        <a href="#profile" class="block py-2 px-3 rounded hover:bg-blue-50 font-medium">Profile</a>
+        <a href="#actions" class="block py-2 px-3 rounded hover:bg-blue-50 font-medium">Actions</a>
+      </nav>
+      <div class="mt-8 text-xs text-gray-400">Live demo environment</div>
+    </aside>
+
+    <!-- Main Content -->
+    <main class="flex-1 p-10">
+      <!-- Dashboard Cards -->
+      <section id="dashboard" class="mb-10">
+        <h1 class="text-3xl font-bold mb-6">Welcome, <span id="creator-name">Loading...</span></h1>
+        <div class="grid grid-cols-1 md:grid-cols-4 gap-6">
+          <div class="bg-white rounded-lg shadow p-6 flex flex-col items-center">
+            <div class="text-2xl font-bold text-blue-600" id="stat-clicks">-</div>
+            <div class="text-gray-500">Clicks Today</div>
+          </div>
+          <div class="bg-white rounded-lg shadow p-6 flex flex-col items-center">
+            <div class="text-2xl font-bold text-green-600" id="stat-conversions">-</div>
+            <div class="text-gray-500">Conversions Today</div>
+          </div>
+          <div class="bg-white rounded-lg shadow p-6 flex flex-col items-center">
+            <div class="text-2xl font-bold text-yellow-600" id="stat-earnings">-</div>
+            <div class="text-gray-500">Pending Earnings</div>
+          </div>
+          <div class="bg-white rounded-lg shadow p-6 flex flex-col items-center">
+            <div class="text-2xl font-bold text-purple-600" id="stat-active-offers">-</div>
+            <div class="text-gray-500">Active Offers</div>
+          </div>
+        </div>
+      </section>
+
+      <!-- Campaigns Section -->
+      <section id="campaigns" class="mb-10">
+        <h2 class="text-2xl font-semibold mb-4">My Campaigns</h2>
+        <div class="bg-white rounded-lg shadow overflow-hidden">
+          <div id="campaigns-table" class="p-4">
+            <div class="text-center py-8">
+              <div class="loading-spinner mx-auto mb-2"></div>
+              <div class="text-gray-500">Loading campaigns...</div>
+            </div>
+          </div>
+        </div>
+      </section>
+
+      <!-- Offers Section -->
+      <section id="offers" class="mb-10">
+        <h2 class="text-2xl font-semibold mb-4">Available Offers</h2>
+        <div class="bg-white rounded-lg shadow overflow-hidden">
+          <div id="offers-table" class="p-4">
+            <div class="text-center py-8">
+              <div class="loading-spinner mx-auto mb-2"></div>
+              <div class="text-gray-500">Loading offers...</div>
+            </div>
+          </div>
+        </div>
+      </section>
+
+      <!-- Rewards Section -->
+      <section id="rewards" class="mb-10">
+        <h2 class="text-2xl font-semibold mb-4">Recent Rewards</h2>
+        <div class="bg-white rounded-lg shadow p-6">
+          <div id="rewards-list">
+            <div class="text-center py-8">
+              <div class="loading-spinner mx-auto mb-2"></div>
+              <div class="text-gray-500">Loading rewards...</div>
+            </div>
+          </div>
+        </div>
+      </section>
+
+      <!-- Profile Section -->
+      <section id="profile" class="mb-10">
+        <h2 class="text-2xl font-semibold mb-4">Profile</h2>
+        <div class="bg-white rounded-lg shadow p-6">
+          <div id="profile-display">
+            <div class="text-center py-8">
+              <div class="loading-spinner mx-auto mb-2"></div>
+              <div class="text-gray-500">Loading profile...</div>
+            </div>
+          </div>
+        </div>
+      </section>
+
+      <!-- Actions Section -->
+      <section id="actions" class="mb-10">
+        <h2 class="text-2xl font-semibold mb-4">Quick Actions</h2>
+        
+        <!-- Campaign Creation -->
+        <div class="bg-white rounded-lg shadow p-6 mb-6">
+          <h3 class="text-lg font-semibold mb-4">Create New Campaign</h3>
+          <form id="campaign-form" class="space-y-4">
+            <div>
+              <label class="block mb-1 font-medium">Campaign Name</label>
+              <input type="text" id="campaign-name" class="border rounded px-3 py-2 w-full" required>
+            </div>
+            <div>
+              <label class="block mb-1 font-medium">Select Offer</label>
+              <select id="campaign-offer" class="border rounded px-3 py-2 w-full" required>
+                <option value="">Loading offers...</option>
+              </select>
+            </div>
+            <div>
+              <label class="block mb-1 font-medium">Share %</label>
+              <input type="number" id="campaign-share" class="border rounded px-3 py-2 w-full" min="1" max="100" value="40" required>
+            </div>
+            <button type="submit" class="bg-blue-600 text-white px-4 py-2 rounded hover:bg-blue-700">
+              <span id="campaign-btn-text">Create Campaign</span>
+            </button>
+            <span id="campaign-msg" class="ml-4"></span>
+          </form>
+        </div>
+
+        <!-- Smart Link Generation -->
+        <div class="bg-white rounded-lg shadow p-6 mb-6">
+          <h3 class="text-lg font-semibold mb-4">Generate Smart Link</h3>
+          <form id="link-form" class="space-y-4">
+            <div>
+              <label class="block mb-1 font-medium">Select Campaign</label>
+              <select id="link-campaign" class="border rounded px-3 py-2 w-full" required>
+                <option value="">Loading campaigns...</option>
+              </select>
+            </div>
+            <div>
+              <label class="block mb-1 font-medium">Select Offer</label>
+              <select id="link-offer" class="border rounded px-3 py-2 w-full" required>
+                <option value="">Loading offers...</option>
+              </select>
+            </div>
+            <button type="submit" class="bg-green-600 text-white px-4 py-2 rounded hover:bg-green-700">
+              <span id="link-btn-text">Generate Link</span>
+            </button>
+            <span id="link-msg" class="ml-4"></span>
+          </form>
+          <div id="generated-link" class="mt-4 p-3 bg-gray-50 rounded hidden">
+            <div class="font-medium mb-2">Generated Smart Link:</div>
+            <div class="break-all text-blue-600"></div>
+          </div>
+        </div>
+
+        <!-- Profile Edit -->
+        <div class="bg-white rounded-lg shadow p-6 mb-6">
+          <h3 class="text-lg font-semibold mb-4">Edit Profile</h3>
+          <form id="profile-form" class="space-y-4">
+            <div>
+              <label class="block mb-1 font-medium">Display Name</label>
+              <input type="text" id="profile-name" class="border rounded px-3 py-2 w-full">
+            </div>
+            <div>
+              <label class="block mb-1 font-medium">Email</label>
+              <input type="email" id="profile-email" class="border rounded px-3 py-2 w-full">
+            </div>
+            <div>
+              <label class="block mb-1 font-medium">Phone</label>
+              <input type="text" id="profile-phone" class="border rounded px-3 py-2 w-full">
+            </div>
+            <button type="submit" class="bg-yellow-600 text-white px-4 py-2 rounded hover:bg-yellow-700">
+              <span id="profile-btn-text">Update Profile</span>
+            </button>
+            <span id="profile-msg" class="ml-4"></span>
+          </form>
+        </div>
+
+        <!-- Simulate Actions -->
+        <div class="bg-white rounded-lg shadow p-6 mb-6">
+          <h3 class="text-lg font-semibold mb-4">Simulate Actions</h3>
+          
+          <!-- Simulate Click -->
+          <form id="click-form" class="space-y-4 mb-6">
+            <h4 class="font-medium">Simulate Click</h4>
+            <div>
+              <label class="block mb-1 font-medium">Select Link</label>
+              <select id="click-link" class="border rounded px-3 py-2 w-full" required>
+                <option value="">Loading links...</option>
+              </select>
+            </div>
+            <button type="submit" class="bg-purple-600 text-white px-4 py-2 rounded hover:bg-purple-700">
+              <span id="click-btn-text">Simulate Click</span>
+            </button>
+            <span id="click-msg" class="ml-4"></span>
+          </form>
+
+          <!-- Simulate Conversion -->
+          <form id="conversion-form" class="space-y-4 mb-6">
+            <h4 class="font-medium">Simulate Conversion</h4>
+            <div>
+              <label class="block mb-1 font-medium">Click ID</label>
+              <input type="text" id="conversion-click-id" class="border rounded px-3 py-2 w-full" placeholder="Will be auto-filled after click">
+            </div>
+            <div>
+              <label class="block mb-1 font-medium">Sale Amount</label>
+              <input type="number" id="conversion-sale" class="border rounded px-3 py-2 w-full" value="1000" required>
+            </div>
+            <div>
+              <label class="block mb-1 font-medium">Offer ID</label>
+              <input type="text" id="conversion-offer-id" class="border rounded px-3 py-2 w-full" required>
+            </div>
+            <div>
+              <label class="block mb-1 font-medium">Order ID</label>
+              <input type="text" id="conversion-order-id" class="border rounded px-3 py-2 w-full" value="ORD12345" required>
+            </div>
+            <button type="submit" class="bg-green-600 text-white px-4 py-2 rounded hover:bg-green-700">
+              <span id="conversion-btn-text">Simulate Conversion</span>
+            </button>
+            <span id="conversion-msg" class="ml-4"></span>
+          </form>
+
+          <!-- Request Payout -->
+          <div class="space-y-4">
+            <h4 class="font-medium">Request Payout</h4>
+            <button id="payout-btn" class="bg-blue-600 text-white px-4 py-2 rounded hover:bg-blue-700">
+              <span id="payout-btn-text">Request Payout</span>
+            </button>
+            <span id="payout-msg" class="ml-4"></span>
+          </div>
+        </div>
+      </section>
+    </main>
+  </div>
+
+  <script>
+    // Configuration
+    const API_BASE = '/v1';
+    const AUTH_TOKEN = 'Bearer mock_jwt_creator_tnt_101';
+    
+    // State management
+    let currentData = {
+      stats: null,
+      campaigns: [],
+      offers: [],
+      rewards: [],
+      profile: null,
+      links: []
+    };
+
+    // Utility functions
+    function showLoading(elementId) {
+      const element = document.getElementById(elementId);
+      if (element) {
+        element.classList.add('loading');
+      }
+    }
+
+    function hideLoading(elementId) {
+      const element = document.getElementById(elementId);
+      if (element) {
+        element.classList.remove('loading');
+      }
+    }
+
+    function showMessage(elementId, message, isError = false) {
+      const element = document.getElementById(elementId);
+      if (element) {
+        element.textContent = message;
+        element.className = isError ? 'error-msg' : 'success-msg';
+        setTimeout(() => {
+          element.textContent = '';
+          element.className = '';
+        }, 3000);
+      }
+    }
+
+    function setButtonLoading(buttonId, isLoading, originalText) {
+      const button = document.getElementById(buttonId);
+      if (button) {
+        const textSpan = button.querySelector('span');
+        if (textSpan) {
+          if (isLoading) {
+            textSpan.innerHTML = '<div class="loading-spinner inline-block mr-2"></div>Loading...';
+            button.disabled = true;
+          } else {
+            textSpan.textContent = originalText;
+            button.disabled = false;
+          }
+        }
+      }
+    }
+
+    // API functions
+    async function apiCall(endpoint, options = {}) {
+      const url = API_BASE + endpoint;
+      const config = {
+        headers: {
+          'Authorization': AUTH_TOKEN,
+          'Content-Type': 'application/json',
+          ...options.headers
+        },
+        ...options
+      };
+
+      try {
+        const response = await fetch(url, config);
+        if (!response.ok) {
+          throw new Error(`HTTP ${response.status}: ${response.statusText}`);
+        }
+        return await response.json();
+      } catch (error) {
+        console.error('API Error:', error);
+        throw error;
+      }
+    }
+
+    // Data loading functions
+    async function loadStats() {
+      try {
+        const data = await apiCall('/creator/stats');
+        console.log('Stats loaded:', data);
+        currentData.stats = data || {};
+        
+        document.getElementById('stat-clicks').textContent = data?.clicks_today || 0;
+        document.getElementById('stat-conversions').textContent = data?.conversions_today || 0;
+        document.getElementById('stat-earnings').textContent = `₹${data?.pending_payout || 0}`;
+        document.getElementById('stat-active-offers').textContent = data?.active_offers || 0;
+      } catch (error) {
+        console.error('Failed to load stats:', error);
+        // Set default values on error
+        document.getElementById('stat-clicks').textContent = '0';
+        document.getElementById('stat-conversions').textContent = '0';
+        document.getElementById('stat-earnings').textContent = '₹0';
+        document.getElementById('stat-active-offers').textContent = '0';
+      }
+    }
+
+    async function loadCampaigns() {
+      try {
+        const data = await apiCall('/creator/campaigns');
+        console.log('Campaigns loaded:', data);
+        currentData.campaigns = data || [];
+        renderCampaignsTable(currentData.campaigns);
+        populateCampaignsSelect('link-campaign');
+      } catch (error) {
+        console.error('Failed to load campaigns:', error);
+        currentData.campaigns = [];
+        document.getElementById('campaigns-table').innerHTML = 
+          '<div class="text-center py-8 text-red-600">Failed to load campaigns</div>';
+      }
+    }
+
+    async function loadOffers() {
+      try {
+        const data = await apiCall('/offers');
+        console.log('Offers loaded:', data);
+        currentData.offers = data || [];
+        renderOffersTable(currentData.offers);
+        populateOffersSelect('campaign-offer');
+        populateOffersSelect('link-offer');
+      } catch (error) {
+        console.error('Failed to load offers:', error);
+        currentData.offers = [];
+        document.getElementById('offers-table').innerHTML = 
+          '<div class="text-center py-8 text-red-600">Failed to load offers</div>';
+      }
+    }
+
+    async function loadRewards() {
+      try {
+        const data = await apiCall('/creator/payouts');
+        console.log('Rewards loaded:', data);
+        currentData.rewards = data || [];
+        renderRewardsList(currentData.rewards);
+      } catch (error) {
+        console.error('Failed to load rewards:', error);
+        currentData.rewards = [];
+        document.getElementById('rewards-list').innerHTML = 
+          '<div class="text-center py-8 text-red-600">Failed to load rewards</div>';
+      }
+    }
+
+    async function loadProfile() {
+      try {
+        const data = await apiCall('/creator/profile');
+        console.log('Profile loaded:', data);
+        currentData.profile = data || {};
+        renderProfile(data);
+      } catch (error) {
+        console.error('Failed to load profile:', error);
+        currentData.profile = {};
+        document.getElementById('profile-section').innerHTML = 
+          '<div class="text-center py-8 text-red-600">Failed to load profile</div>';
+      }
+    }
+
+    async function loadLinks() {
+      try {
+        const data = await apiCall('/links');
+        console.log('Links loaded:', data);
+        currentData.links = (data && data.links) ? data.links : [];
+        populateLinksSelect('click-link');
+      } catch (error) {
+        console.error('Failed to load links:', error);
+        currentData.links = [];
+      }
+    }
+
+    // Rendering functions
+    function renderCampaignsTable(campaigns) {
+      const container = document.getElementById('campaigns-table');
+      
+      if (!campaigns || campaigns.length === 0) {
+        container.innerHTML = '<div class="text-center py-8 text-gray-500">No campaigns found</div>';
+        return;
+      }
+
+      const table = `
+        <table class="min-w-full">
+          <thead class="bg-gray-100">
+            <tr>
+              <th class="py-2 px-4 text-left">Campaign</th>
+              <th class="py-2 px-4 text-left">Offer</th>
+              <th class="py-2 px-4 text-left">Share %</th>
+              <th class="py-2 px-4 text-left">Status</th>
+              <th class="py-2 px-4 text-left">Created</th>
+            </tr>
+          </thead>
+          <tbody>
+            ${campaigns.map(campaign => `
+              <tr class="border-t">
+                <td class="py-2 px-4 font-medium">${campaign.name}</td>
+                <td class="py-2 px-4">${campaign.offer_id}</td>
+                <td class="py-2 px-4">${campaign.share_pct}%</td>
+                <td class="py-2 px-4">
+                  <span class="inline-block px-2 py-1 bg-green-100 text-green-700 rounded text-sm">
+                    ${campaign.status}
+                  </span>
+                </td>
+                <td class="py-2 px-4 text-sm text-gray-500">${new Date(campaign.created_at).toLocaleDateString()}</td>
+              </tr>
+            `).join('')}
+          </tbody>
+        </table>
+      `;
+      
+      container.innerHTML = table;
+    }
+
+    function renderOffersTable(offers) {
+      const container = document.getElementById('offers-table');
+      
+      if (!offers || offers.length === 0) {
+        container.innerHTML = '<div class="text-center py-8 text-gray-500">No offers available</div>';
+        return;
+      }
+
+      const table = `
+        <table class="min-w-full">
+          <thead class="bg-gray-100">
+            <tr>
+              <th class="py-2 px-4 text-left">Brand</th>
+              <th class="py-2 px-4 text-left">Category</th>
+              <th class="py-2 px-4 text-left">Commission</th>
+              <th class="py-2 px-4 text-left">Status</th>
+            </tr>
+          </thead>
+          <tbody>
+            ${offers.map(offer => `
+              <tr class="border-t">
+                <td class="py-2 px-4">
+                  <img src="https://logo.clearbit.com/${offer.brand.toLowerCase()}.com" 
+                       class="brand-img inline-block mr-2" 
+                       onerror="this.style.display='none'">
+                  ${offer.brand}
+                </td>
+                <td class="py-2 px-4">${offer.category}</td>
+                <td class="py-2 px-4">${offer.base_commission_pct}%</td>
+                <td class="py-2 px-4">
+                  <span class="inline-block px-2 py-1 bg-green-100 text-green-700 rounded text-sm">
+                    Active
+                  </span>
+                </td>
+              </tr>
+            `).join('')}
+          </tbody>
+        </table>
+      `;
+      
+      container.innerHTML = table;
+    }
+
+    function renderRewardsList(rewards) {
+      const container = document.getElementById('rewards-list');
+      
+      if (!rewards || rewards.length === 0) {
+        container.innerHTML = '<div class="text-center py-8 text-gray-500">No rewards yet</div>';
+        return;
+      }
+
+      const list = rewards.map(reward => `
+        <div class="flex items-center mb-3 p-3 bg-gray-50 rounded">
+          <span class="text-green-600 font-bold mr-3">+₹${reward.amount}</span>
+          <span class="text-gray-700 flex-1">${reward.brand} | Order #${reward.order_id}</span>
+          <span class="text-xs px-2 py-1 rounded ${
+            reward.status === 'paid' ? 'bg-green-100 text-green-700' : 
+            reward.status === 'pending' ? 'bg-yellow-100 text-yellow-700' : 
+            'bg-gray-100 text-gray-700'
+          }">${reward.status}</span>
+        </div>
+      `).join('');
+      
+      container.innerHTML = list;
+    }
+
+    function renderProfile(profile) {
+      const container = document.getElementById('profile-display');
+      
+      if (!profile) {
+        container.innerHTML = '<div class="text-center py-8 text-red-600">Profile not found</div>';
+        return;
+      }
+
+      // Update welcome message
+      document.getElementById('creator-name').textContent = profile.display_name || profile.name || 'Creator';
+
+      // Update form fields
+      document.getElementById('profile-name').value = profile.display_name || profile.name || '';
+      document.getElementById('profile-email').value = profile.email || '';
+      document.getElementById('profile-phone').value = profile.phone || '';
+
+      // Display profile info
+      container.innerHTML = `
+        <div class="space-y-3">
+          <div class="flex justify-between">
+            <span class="text-gray-600">Name:</span>
+            <span class="font-bold">${profile.display_name || profile.name || 'Not set'}</span>
+          </div>
+          <div class="flex justify-between">
+            <span class="text-gray-600">Email:</span>
+            <span class="font-bold">${profile.email || 'Not set'}</span>
+          </div>
+          <div class="flex justify-between">
+            <span class="text-gray-600">Phone:</span>
+            <span class="font-bold">${profile.phone || 'Not set'}</span>
+          </div>
+          <div class="flex justify-between">
+            <span class="text-gray-600">Theme:</span>
+            <span class="inline-block w-6 h-6 rounded-full align-middle" style="background:#2563eb"></span>
+          </div>
+        </div>
+      `;
+    }
+
+    // Populate select dropdowns
+    function populateOffersSelect(selectId) {
+      const select = document.getElementById(selectId);
+      if (!select) return;
+
+      select.innerHTML = '<option value="">Select an offer...</option>';
+      if (currentData.offers && currentData.offers.length > 0) {
+        currentData.offers.forEach(offer => {
+          const option = document.createElement('option');
+          option.value = offer.offer_id;
+          option.textContent = `${offer.brand} - ${offer.category} (${offer.base_commission_pct}%)`;
+          select.appendChild(option);
+        });
+      }
+    }
+
+    function populateCampaignsSelect(selectId) {
+      const select = document.getElementById(selectId);
+      if (!select) return;
+
+      console.log('Populating campaigns dropdown with:', currentData.campaigns);
+
+      select.innerHTML = '<option value="">Select a campaign...</option>';
+      if (currentData.campaigns && currentData.campaigns.length > 0) {
+        currentData.campaigns.forEach(campaign => {
+          const option = document.createElement('option');
+          option.value = campaign.campaign_id;
+          option.textContent = `${campaign.name} (${campaign.status})`;
+          select.appendChild(option);
+        });
+      }
+    }
+
+    function populateLinksSelect(selectId) {
+      const select = document.getElementById(selectId);
+      if (!select) return;
+
+      select.innerHTML = '<option value="">Select a link...</option>';
+      if (currentData.links && currentData.links.length > 0) {
+        currentData.links.forEach(link => {
+          const option = document.createElement('option');
+          option.value = link.link_id;
+          option.textContent = `${link.slug} (${link.offer_id})`;
+          select.appendChild(option);
+        });
+      }
+    }
+
+    // Form handlers
+    document.getElementById('campaign-form').addEventListener('submit', async (e) => {
+      e.preventDefault();
+      
+      const name = document.getElementById('campaign-name').value;
+      const offerId = document.getElementById('campaign-offer').value;
+      const share = document.getElementById('campaign-share').value;
+
+      setButtonLoading('campaign-btn-text', true, 'Create Campaign');
+
+      try {
+        await apiCall('/campaigns', {
+          method: 'POST',
+          body: JSON.stringify({
+            tenant_id: 'tnt_101',
+            name,
+            offer_id: offerId,
+            share_pct: parseInt(share)
+          })
+        });
+
+        showMessage('campaign-msg', 'Campaign created successfully!');
+        document.getElementById('campaign-form').reset();
+        
+        // Refresh data
+        await Promise.all([
+          loadCampaigns(),
+          loadStats(),
+          loadLinks()
+        ]);
+      } catch (error) {
+        showMessage('campaign-msg', 'Failed to create campaign', true);
+      } finally {
+        setButtonLoading('campaign-btn-text', false, 'Create Campaign');
+      }
+    });
+
+    document.getElementById('link-form').addEventListener('submit', async (e) => {
+      e.preventDefault();
+      
+      const campaignId = document.getElementById('link-campaign').value;
+      const offerId = document.getElementById('link-offer').value;
+
+      console.log('Generating smart link with:', { campaignId, offerId });
+
+      setButtonLoading('link-btn-text', true, 'Generate Link');
+
+      try {
+        const data = await apiCall('/links', {
+          method: 'POST',
+          body: JSON.stringify({
+            campaign_id: campaignId,
+            offer_id: offerId
+          })
+        });
+
+        console.log('Smart link generated:', data);
+
+        showMessage('link-msg', 'Smart link generated successfully!');
+        
+        // Show generated link
+        const linkContainer = document.getElementById('generated-link');
+        linkContainer.classList.remove('hidden');
+        linkContainer.querySelector('div:last-child').innerHTML = 
+          `<a href="${data.smart_link}" target="_blank" class="text-blue-600 hover:underline">${data.smart_link}</a>`;
+        
+        // Refresh data
+        await loadLinks();
+      } catch (error) {
+        console.error('Failed to generate smart link:', error);
+        showMessage('link-msg', 'Failed to generate link', true);
+      } finally {
+        setButtonLoading('link-btn-text', false, 'Generate Link');
+      }
+    });
+
+    document.getElementById('profile-form').addEventListener('submit', async (e) => {
+      e.preventDefault();
+      
+      const name = document.getElementById('profile-name').value;
+      const email = document.getElementById('profile-email').value;
+      const phone = document.getElementById('profile-phone').value;
+
+      setButtonLoading('profile-btn-text', true, 'Update Profile');
+
+      try {
+        await apiCall('/creator/profile', {
+          method: 'PUT',
+          body: JSON.stringify({
+            display_name: name,
+            email,
+            phone
+          })
+        });
+
+        showMessage('profile-msg', 'Profile updated successfully!');
+        
+        // Refresh data
+        await loadProfile();
+      } catch (error) {
+        showMessage('profile-msg', 'Failed to update profile', true);
+      } finally {
+        setButtonLoading('profile-btn-text', false, 'Update Profile');
+      }
+    });
+
+    document.getElementById('click-form').addEventListener('submit', async (e) => {
+      e.preventDefault();
+      
+      const linkId = document.getElementById('click-link').value;
+
+      setButtonLoading('click-btn-text', true, 'Simulate Click');
+
+      try {
+        const data = await apiCall('/events/click', {
+          method: 'POST',
+          body: JSON.stringify({ link_id: linkId })
+        });
+
+        showMessage('click-msg', `Click simulated! Click ID: ${data.click_id}`);
+        document.getElementById('conversion-click-id').value = data.click_id;
+        
+        // Refresh stats
+        await loadStats();
+      } catch (error) {
+        showMessage('click-msg', 'Failed to simulate click', true);
+      } finally {
+        setButtonLoading('click-btn-text', false, 'Simulate Click');
+      }
+    });
+
+    document.getElementById('conversion-form').addEventListener('submit', async (e) => {
+      e.preventDefault();
+      
+      const clickId = document.getElementById('conversion-click-id').value;
+      const sale = document.getElementById('conversion-sale').value;
+      const offerId = document.getElementById('conversion-offer-id').value;
+      const orderId = document.getElementById('conversion-order-id').value;
+
+      setButtonLoading('conversion-btn-text', true, 'Simulate Conversion');
+
+      try {
+        await apiCall('/events/conversion', {
+          method: 'POST',
+          body: JSON.stringify({
+            click_id: clickId,
+            offer_id: offerId,
+            sale_amount: parseFloat(sale),
+            order_id: orderId,
+            status: 'approved'
+          })
+        });
+
+        showMessage('conversion-msg', 'Conversion simulated successfully!');
+        
+        // Refresh data
+        await Promise.all([
+          loadStats(),
+          loadRewards()
+        ]);
+      } catch (error) {
+        showMessage('conversion-msg', 'Failed to simulate conversion', true);
+      } finally {
+        setButtonLoading('conversion-btn-text', false, 'Simulate Conversion');
+      }
+    });
+
+    document.getElementById('payout-btn').addEventListener('click', async () => {
+      setButtonLoading('payout-btn-text', true, 'Request Payout');
+
+      try {
+        await apiCall('/rewards/payout/run', {
+          method: 'POST'
+        });
+
+        showMessage('payout-msg', 'Payout requested successfully!');
+        
+        // Refresh data
+        await Promise.all([
+          loadStats(),
+          loadRewards()
+        ]);
+      } catch (error) {
+        showMessage('payout-msg', 'Failed to request payout', true);
+      } finally {
+        setButtonLoading('payout-btn-text', false, 'Request Payout');
+      }
+    });
+
+    // Initialize dashboard
+    async function initializeDashboard() {
+      try {
+        // Load all data in parallel
+        await Promise.all([
+          loadStats(),
+          loadCampaigns(),
+          loadOffers(),
+          loadRewards(),
+          loadProfile(),
+          loadLinks()
+        ]);
+      } catch (error) {
+        console.error('Failed to initialize dashboard:', error);
+      }
+    }
+
+    // Start the dashboard
+    window.addEventListener('load', initializeDashboard);
+  </script>
+</body>
+</html> 

@@ -1,0 +1,18 @@
+# Test: Creator Dashboard – Mobile Breakpoint
+
+## Scenario: Overview tab renders core KPIs on 375 px width
+*Given* JWT with `role=creator`
+*When* viewport is set to 375 × 812 and `/overview` is loaded
+*Then* the KPI cards "Clicks", "Conversions", and "Pending payout" must all be present
+*And* "Create Campaign" FAB is visible
+*And* no horizontal scrollbar exists.
+
+## Scenario: Navigation switches to bottom bar
+*Given* viewport 375 × 812
+*When* landing on `/overview`
+*Then* a bottom navigation bar with 4 icons (Overview, Campaigns, Payouts, Settings) is present.
+
+## Scenario: Campaigns table collapses gracefully
+*Given* viewport 375 × 812
+*When* `/campaigns` tab is loaded
+*Then* at least the columns "Campaign" and "Status" are visible without horizontal scroll. 

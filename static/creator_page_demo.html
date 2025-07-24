@@ -1,0 +1,433 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>TechReviews - Best Tech Deals | Hissaback</title>
+    <style>
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+
+        body {
+            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+            background: linear-gradient(135deg, #ff6b6b, #ee5a24);
+            min-height: 100vh;
+            color: white;
+        }
+
+        .container {
+            max-width: 1200px;
+            margin: 0 auto;
+            padding: 20px;
+        }
+
+        .header {
+            text-align: center;
+            margin-bottom: 40px;
+        }
+
+        .header h1 {
+            font-size: 2.5rem;
+            margin-bottom: 10px;
+            text-shadow: 2px 2px 4px rgba(0,0,0,0.3);
+        }
+
+        .header p {
+            font-size: 1.2rem;
+            opacity: 0.9;
+            margin-bottom: 20px;
+        }
+
+        .creator-info {
+            background: rgba(255,255,255,0.1);
+            padding: 20px;
+            border-radius: 15px;
+            text-align: center;
+            margin-bottom: 30px;
+            backdrop-filter: blur(10px);
+        }
+
+        .creator-avatar {
+            width: 80px;
+            height: 80px;
+            border-radius: 50%;
+            background: rgba(255,255,255,0.2);
+            margin: 0 auto 15px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-size: 2rem;
+        }
+
+        .stats-bar {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(150px, 1fr));
+            gap: 15px;
+            margin-bottom: 30px;
+        }
+
+        .stat-item {
+            background: rgba(255,255,255,0.1);
+            padding: 15px;
+            border-radius: 10px;
+            text-align: center;
+            backdrop-filter: blur(10px);
+        }
+
+        .stat-number {
+            font-size: 1.5rem;
+            font-weight: bold;
+            margin-bottom: 5px;
+        }
+
+        .stat-label {
+            font-size: 0.9rem;
+            opacity: 0.8;
+        }
+
+        .offers-section {
+            background: rgba(255,255,255,0.1);
+            border-radius: 15px;
+            padding: 30px;
+            backdrop-filter: blur(10px);
+        }
+
+        .section-title {
+            text-align: center;
+            margin-bottom: 30px;
+            font-size: 1.8rem;
+        }
+
+        .offers-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(280px, 1fr));
+            gap: 20px;
+        }
+
+        .offer-card {
+            background: rgba(255,255,255,0.95);
+            color: #333;
+            border-radius: 15px;
+            padding: 25px;
+            text-align: center;
+            transition: all 0.3s ease;
+            cursor: pointer;
+            box-shadow: 0 5px 15px rgba(0,0,0,0.1);
+        }
+
+        .offer-card:hover {
+            transform: translateY(-5px);
+            box-shadow: 0 10px 25px rgba(0,0,0,0.2);
+        }
+
+        .offer-icon {
+            font-size: 3rem;
+            margin-bottom: 15px;
+        }
+
+        .offer-brand {
+            font-size: 1.3rem;
+            font-weight: bold;
+            margin-bottom: 10px;
+            color: #ff6b6b;
+        }
+
+        .offer-description {
+            color: #666;
+            margin-bottom: 15px;
+            line-height: 1.5;
+        }
+
+        .offer-commission {
+            background: linear-gradient(135deg, #28a745, #20c997);
+            color: white;
+            padding: 8px 16px;
+            border-radius: 20px;
+            font-weight: bold;
+            margin-bottom: 15px;
+            display: inline-block;
+        }
+
+        .shop-button {
+            background: linear-gradient(135deg, #667eea, #764ba2);
+            color: white;
+            border: none;
+            padding: 12px 30px;
+            border-radius: 25px;
+            font-size: 1rem;
+            font-weight: bold;
+            cursor: pointer;
+            transition: all 0.3s ease;
+            width: 100%;
+        }
+
+        .shop-button:hover {
+            transform: translateY(-2px);
+            box-shadow: 0 5px 15px rgba(0,0,0,0.2);
+        }
+
+        .footer {
+            text-align: center;
+            margin-top: 40px;
+            padding: 20px;
+            background: rgba(255,255,255,0.1);
+            border-radius: 15px;
+            backdrop-filter: blur(10px);
+        }
+
+        .footer p {
+            opacity: 0.8;
+            margin-bottom: 10px;
+        }
+
+        .social-links {
+            display: flex;
+            justify-content: center;
+            gap: 15px;
+            margin-top: 15px;
+        }
+
+        .social-link {
+            background: rgba(255,255,255,0.2);
+            color: white;
+            padding: 10px;
+            border-radius: 50%;
+            text-decoration: none;
+            transition: all 0.3s ease;
+        }
+
+        .social-link:hover {
+            background: rgba(255,255,255,0.3);
+            transform: translateY(-2px);
+        }
+
+        .cashback-badge {
+            position: fixed;
+            top: 20px;
+            right: 20px;
+            background: linear-gradient(135deg, #ffc107, #fd7e14);
+            color: white;
+            padding: 10px 20px;
+            border-radius: 25px;
+            font-weight: bold;
+            box-shadow: 0 5px 15px rgba(0,0,0,0.2);
+            animation: pulse 2s infinite;
+        }
+
+        @keyframes pulse {
+            0% { transform: scale(1); }
+            50% { transform: scale(1.05); }
+            100% { transform: scale(1); }
+        }
+
+        .notification {
+            position: fixed;
+            bottom: 20px;
+            right: 20px;
+            background: rgba(40, 167, 69, 0.9);
+            color: white;
+            padding: 15px 20px;
+            border-radius: 10px;
+            backdrop-filter: blur(10px);
+            transform: translateX(400px);
+            transition: transform 0.3s ease;
+        }
+
+        .notification.show {
+            transform: translateX(0);
+        }
+
+        @media (max-width: 768px) {
+            .container {
+                padding: 15px;
+            }
+            
+            .header h1 {
+                font-size: 2rem;
+            }
+            
+            .offers-grid {
+                grid-template-columns: 1fr;
+            }
+        }
+    </style>
+</head>
+<body>
+    <div class="cashback-badge">
+        💰 Earn Cashback!
+    </div>
+
+    <div class="container">
+        <div class="header">
+            <h1>🎉 Welcome to TechReviews</h1>
+            <p>Your trusted source for the best tech deals and cashback offers</p>
+        </div>
+
+        <div class="creator-info">
+            <div class="creator-avatar">
+                👨‍💻
+            </div>
+            <h2>John's Tech Reviews</h2>
+            <p>Tech enthusiast helping you save money on the latest gadgets</p>
+        </div>
+
+        <div class="stats-bar">
+            <div class="stat-item">
+                <div class="stat-number">₹2,450</div>
+                <div class="stat-label">Total Saved</div>
+            </div>
+            <div class="stat-item">
+                <div class="stat-number">156</div>
+                <div class="stat-label">Happy Customers</div>
+            </div>
+            <div class="stat-item">
+                <div class="stat-number">23</div>
+                <div class="stat-label">Successful Orders</div>
+            </div>
+            <div class="stat-item">
+                <div class="stat-number">4.8⭐</div>
+                <div class="stat-label">Customer Rating</div>
+            </div>
+        </div>
+
+        <div class="offers-section">
+            <h2 class="section-title">🔥 Hot Deals - Limited Time!</h2>
+            
+            <div class="offers-grid">
+                <div class="offer-card" onclick="shopNow('flipkart')">
+                    <div class="offer-icon">📱</div>
+                    <div class="offer-brand">Flipkart Electronics</div>
+                    <div class="offer-description">
+                        Get amazing deals on smartphones, laptops, and all electronics. 
+                        Free delivery on orders above ₹499!
+                    </div>
+                    <div class="offer-commission">Get 6% Cashback</div>
+                    <button class="shop-button">🛒 Shop Now & Save</button>
+                </div>
+
+                <div class="offer-card" onclick="shopNow('amazon')">
+                    <div class="offer-icon">🛒</div>
+                    <div class="offer-brand">Amazon Prime</div>
+                    <div class="offer-description">
+                        Prime members get exclusive deals with fast delivery. 
+                        New users get 30-day free trial!
+                    </div>
+                    <div class="offer-commission">Get 8% Cashback</div>
+                    <button class="shop-button">🛒 Shop Now & Save</button>
+                </div>
+
+                <div class="offer-card" onclick="shopNow('myntra')">
+                    <div class="offer-icon">👕</div>
+                    <div class="offer-brand">Myntra Fashion</div>
+                    <div class="offer-description">
+                        Latest fashion trends with great discounts. 
+                        Free shipping on orders above ₹799!
+                    </div>
+                    <div class="offer-commission">Get 5% Cashback</div>
+                    <button class="shop-button">🛒 Shop Now & Save</button>
+                </div>
+
+                <div class="offer-card" onclick="shopNow('swiggy')">
+                    <div class="offer-icon">🍕</div>
+                    <div class="offer-brand">Swiggy Food</div>
+                    <div class="offer-description">
+                        Order from your favorite restaurants. 
+                        Get instant cashback on every order!
+                    </div>
+                    <div class="offer-commission">Get 3% Cashback</div>
+                    <button class="shop-button">🛒 Order Now & Save</button>
+                </div>
+            </div>
+        </div>
+
+        <div class="footer">
+            <p>💡 <strong>How it works:</strong> Click any offer above, complete your purchase, and get cashback credited to your account within 24 hours!</p>
+            <p>🔒 <strong>100% Secure:</strong> All transactions are protected and your data is never shared.</p>
+            
+            <div class="social-links">
+                <a href="#" class="social-link">📱</a>
+                <a href="#" class="social-link">📧</a>
+                <a href="#" class="social-link">📺</a>
+                <a href="#" class="social-link">📷</a>
+            </div>
+        </div>
+    </div>
+
+    <div class="notification" id="notification">
+        ✅ Cashback offer applied! You'll save ₹240 on this purchase.
+    </div>
+
+    <script>
+        function shopNow(brand) {
+            // Simulate the shopping flow
+            const brandNames = {
+                flipkart: 'Flipkart Electronics',
+                amazon: 'Amazon Prime',
+                myntra: 'Myntra Fashion',
+                swiggy: 'Swiggy Food'
+            };
+
+            const cashbackAmounts = {
+                flipkart: '₹240',
+                amazon: '₹320',
+                myntra: '₹150',
+                swiggy: '₹90'
+            };
+
+            // Show notification
+            const notification = document.getElementById('notification');
+            notification.innerHTML = `✅ Cashback offer applied! You'll save ${cashbackAmounts[brand]} on ${brandNames[brand]}.`;
+            notification.classList.add('show');
+
+            // Simulate redirect to merchant
+            setTimeout(() => {
+                const merchantUrls = {
+                    flipkart: 'https://www.flipkart.com',
+                    amazon: 'https://www.amazon.in',
+                    myntra: 'https://www.myntra.com',
+                    swiggy: 'https://www.swiggy.com'
+                };
+                
+                // In real implementation, this would be the smart link
+                window.open(merchantUrls[brand], '_blank');
+            }, 2000);
+
+            // Hide notification after 5 seconds
+            setTimeout(() => {
+                notification.classList.remove('show');
+            }, 5000);
+        }
+
+        // Add some interactivity
+        document.addEventListener('DOMContentLoaded', function() {
+            // Animate stats on scroll
+            const observer = new IntersectionObserver((entries) => {
+                entries.forEach(entry => {
+                    if (entry.isIntersecting) {
+                        entry.target.style.opacity = '1';
+                        entry.target.style.transform = 'translateY(0)';
+                    }
+                });
+            });
+
+            document.querySelectorAll('.stat-item').forEach(item => {
+                item.style.opacity = '0';
+                item.style.transform = 'translateY(20px)';
+                item.style.transition = 'all 0.6s ease';
+                observer.observe(item);
+            });
+
+            // Add click tracking (simulated)
+            document.querySelectorAll('.offer-card').forEach(card => {
+                card.addEventListener('click', function() {
+                    // In real implementation, this would track the click
+                    console.log('Offer clicked:', this.querySelector('.offer-brand').textContent);
+                });
+            });
+        });
+    </script>
+</body>
+</html> 

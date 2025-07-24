@@ -1,0 +1,49 @@
+# Flow: Creator Dashboard v0
+
+## 0. Trigger
+Creator logs in at `/login` → JWT sets `role=creator`.
+
+## 1. Layout & Navigation
+* Sidebar items (mobile collapsible):
+  1. Overview
+  2. Campaigns
+  3. Payouts
+  4. Settings
+
+## 2. Overview Tab
+1. Fetch quick stats `/v1/creator/stats?range=today`
+2. Display three KPI cards:
+   * Clicks (today)
+   * Conversions (today)
+   * Pending payout ₹ (sum of ledger `queued + confirmed`)
+3. Chart: 7‑day trend (clicks vs conversions) – basic bar graph.
+
+## 3. Campaigns Tab
+1. GET `/v1/campaigns?tenant_id={{jwt.tenant_id}}`
+2. Table columns: Campaign Name, Status toggle, Created, Share %.
+3. FAB "Create Campaign" → deep‑link `/campaign/new` (re‑uses existing builder flow).
+
+## 4. Payouts Tab
+1. GET `/v1/rewards/user?status=pending,paid`
+2. Filter pills: All | Pending | Paid.
+3. Table: Date, Amount, Status badge.
+4. CTA "Export CSV" → calls `/v1/rewards/export?format=csv`.
+
+## 5. Settings
+1. Profile section: logo upload, display name, phone, email.
+2. Security: set/change password (optional), rotate API key.
+3. Branding color picker (stores `theme_hex`).
+
+## 6. Mobile UX Rules
+* Navigation becomes bottom tab bar at ≤ 430 px width.
+* KPI cards stack vertically with 16 px gap.
+* "Create Campaign" FAB anchors bottom‑right, 56 px diameter.
+
+## 7. Success Criteria
+* All API calls respond ≤ 500 ms.
+* LCP on Overview ≤ 2.0 s on 3G.
+* Works fully responsive down to 360 px.
+
+_Notes_
+* Charts can use Chart.js stub (Cursor codegen).
+* Sidebar items auto‑hidden for `role=admin`. 

@@ -1,0 +1,49 @@
+status,priority,title,owner,link
+COMPLETED,P0,Design ER diagram & seed mocks,PM,requirements.md#E2
+COMPLETED,P0,Write /flows/onboarding.flow.md,PM,flows/onboarding.flow.md
+COMPLETED,P0,Author /tests/onboarding.test.md,QE,tests/onboarding.test.md
+COMPLETED,P0,Design ER diagram in /docs/er.drawio,ENG,technical-specifications.md#1
+COMPLETED,P0,Stub Trackier offer-sync cron,ENG,technical-specifications.md#8.1
+COMPLETED,P0,Build /flows/user-journey.flow.md,PM,flows/user-journey.flow.md
+COMPLETED,P0,Add users.mock.json & ledger mocks,QE,data/
+COMPLETED,P1,Implement nightly Trackier sync,no‑code agent,flows/catalogue.sync
+COMPLETED,P1,Create campaign‑builder.flow,PM,flows/campaign-builder.flow.md
+COMPLETED,P1,Implement /v1/events/conversion endpoint,ENG,technical-specifications.md#3
+TODO,P1,Integrate AGCOD sandbox key,ENG,technical-specifications.md#8.2
+TODO,P1,Implement JWT refresh token strategy,ENG,technical-specifications.md#4
+TODO,P1,Setup PostgreSQL RLS for multi-tenant isolation,ENG,technical-specifications.md#4
+COMPLETED,P2,Build OTP verification stub,no‑code agent,technical-specifications.md#3
+TODO,P2,Write conversion‑ledger.test,QE,tests/
+TODO,P2,Implement fraud detection rules,ENG,technical-specifications.md#10
+TODO,P2,Setup rate limiting in API Gateway,ENG,technical-specifications.md#4
+TODO,P2,Configure webhook error handling & retries,ENG,technical-specifications.md#5
+TODO,P3,Stub Amazon GV payout adapter,no‑code agent,technical-specifications.md#8.2
+TODO,P3,Setup Prometheus/Grafana monitoring,ENG,technical-specifications.md#7
+TODO,P3,Implement database partitioning strategy,ENG,technical-specifications.md#2
+COMPLETED,P0,Populate offers.mock.json,PM,data/offers.mock.json.txt
+
+# NEW: Creator Dashboard Requirements (Based on User POV)
+TODO,P0,Design /flows/creator_dashboard.flow.md,PM,flows/creator_dashboard.flow.md
+TODO,P0,Write /tests/creator_dashboard_mobile.test.md,QE,tests/creator_dashboard_mobile.test.md
+TODO,P0,Implement unified login with role-based views,ENG,technical-specifications.md#4
+TODO,P0,Add creator authentication (OTP + optional password),ENG,creator-auth.md
+TODO,P0,Build creator dashboard UI (mobile-first responsive),ENG,creator-dashboard-ui.md
+TODO,P0,Implement creator-specific API endpoints,ENG,creator-api.md
+TODO,P0,Add role-based middleware and sidebar logic,ENG,role-middleware.md
+TODO,P0,Add payout tracking for creators,ENG,payout-tracking.md
+TODO,P0,Implement creator profile management,ENG,creator-profile.md
+
+# NEW: Headless Offer Catalogue & API-Only Consumption
+COMPLETED,P0,Create /flows/offer_sync.flow.md,PM,flows/offer_sync.flow.md
+COMPLETED,P0,Create /flows/api_only_partner.flow.md,PM,flows/api_only_partner.flow.md
+COMPLETED,P0,Add new data models for brands and enhanced offers,ENG,app.py
+COMPLETED,P0,Implement GET /v1/categories endpoint,ENG,app.py
+COMPLETED,P0,Implement GET /v1/brands endpoint,ENG,app.py
+COMPLETED,P0,Enhance GET /v1/offers with advanced filtering,ENG,app.py
+COMPLETED,P0,Add support for flat reward amounts in campaigns,ENG,app.py
+COMPLETED,P0,Create comprehensive test specifications,QE,tests/
+TODO,P0,Implement nightly Trackier sync job,ENG,flows/offer_sync.flow.md
+TODO,P0,Expose GET /v1/categories endpoint,ENG,app.py
+TODO,P0,Write /flows/api_only_partner.flow.md,PM,flows/api_only_partner.flow.md
+TODO,P1,Publish widgets/offer-grid.js (Cursor codegen),FE,widgets/
+TODO,P1,Add tests: offer_sync.test.md, api_only_partner.test.md, categories_endpoint.test.md,QE,tests/

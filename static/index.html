@@ -1,0 +1,352 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>ProfitShare Platform - Creator Dashboard</title>
+    <script src="https://cdn.tailwindcss.com"></script>
+    <script src="https://unpkg.com/axios/dist/axios.min.js"></script>
+</head>
+<body class="bg-gray-50">
+    <div class="min-h-screen">
+        <!-- Header -->
+        <header class="bg-blue-600 text-white">
+            <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
+                <div class="flex justify-between items-center py-6">
+                    <div class="flex items-center">
+                        <h1 class="text-2xl font-bold">ProfitShare Platform</h1>
+                        <span class="ml-3 px-2 py-1 bg-blue-500 rounded text-sm">MVP Demo</span>
+                    </div>
+                    <div class="text-sm">
+                        <span id="api-status" class="px-2 py-1 bg-green-500 rounded">API Connected</span>
+                    </div>
+                </div>
+            </div>
+        </header>
+
+        <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-8">
+            <!-- API Status Check -->
+            <div class="mb-8 p-4 bg-white rounded-lg shadow">
+                <h2 class="text-lg font-semibold mb-4">🔄 Platform Status</h2>
+                <div class="grid grid-cols-1 md:grid-cols-3 gap-4">
+                    <div class="text-center">
+                        <div id="health-status" class="text-2xl font-bold text-green-600">●</div>
+                        <div class="text-sm text-gray-600">API Health</div>
+                    </div>
+                    <div class="text-center">
+                        <div id="offers-count" class="text-2xl font-bold text-blue-600">--</div>
+                        <div class="text-sm text-gray-600">Available Offers</div>
+                    </div>
+                    <div class="text-center">
+                        <div id="tenants-count" class="text-2xl font-bold text-purple-600">--</div>
+                        <div class="text-sm text-gray-600">Active Creators</div>
+                    </div>
+                </div>
+            </div>
+
+            <!-- Quick Actions -->
+            <div class="grid grid-cols-1 lg:grid-cols-2 gap-8">
+                <!-- Catalogue Management -->
+                <div class="bg-white rounded-lg shadow p-6">
+                    <h3 class="text-xl font-semibold mb-4">📦 Catalogue Management</h3>
+                    
+                    <button id="sync-offers" class="w-full mb-4 bg-blue-600 text-white py-2 px-4 rounded hover:bg-blue-700 transition">
+                        Sync Offers from Trackier
+                    </button>
+                    
+                    <div id="offers-list" class="space-y-2">
+                        <!-- Offers will be loaded here -->
+                    </div>
+                    
+                    <div class="mt-4 text-sm text-gray-600">
+                        <div>Last sync: <span id="last-sync">--</span></div>
+                    </div>
+                </div>
+
+                <!-- Creator Onboarding Demo -->
+                <div class="bg-white rounded-lg shadow p-6">
+                    <h3 class="text-xl font-semibold mb-4">🚀 Creator Onboarding</h3>
+                    
+                    <div class="space-y-4">
+                        <div>
+                            <label class="block text-sm font-medium text-gray-700">Creator Name</label>
+                            <input type="text" id="creator-name" class="mt-1 block w-full border border-gray-300 rounded-md px-3 py-2" placeholder="Enter creator name">
+                        </div>
+                        
+                        <div>
+                            <label class="block text-sm font-medium text-gray-700">Email</label>
+                            <input type="email" id="creator-email" class="mt-1 block w-full border border-gray-300 rounded-md px-3 py-2" placeholder="creator@example.com">
+                        </div>
+                        
+                        <div>
+                            <label class="block text-sm font-medium text-gray-700">Phone</label>
+                            <input type="tel" id="creator-phone" class="mt-1 block w-full border border-gray-300 rounded-md px-3 py-2" placeholder="+91xxxxxxxxxx">
+                        </div>
+                        
+                        <button id="create-creator" class="w-full bg-green-600 text-white py-2 px-4 rounded hover:bg-green-700 transition">
+                            Create Creator Account
+                        </button>
+                    </div>
+                    
+                    <div id="creator-result" class="mt-4 text-sm"></div>
+                </div>
+            </div>
+
+            <!-- Campaign Builder -->
+            <div class="mt-8 bg-white rounded-lg shadow p-6">
+                <h3 class="text-xl font-semibold mb-4">🎯 Campaign Builder</h3>
+                
+                <div class="grid grid-cols-1 lg:grid-cols-2 gap-6">
+                    <div>
+                        <h4 class="font-medium mb-3">Create Campaign</h4>
+                        <div class="space-y-3">
+                            <input type="text" id="campaign-name" class="w-full border border-gray-300 rounded-md px-3 py-2" placeholder="Campaign name">
+                            
+                            <select id="campaign-tenant" class="w-full border border-gray-300 rounded-md px-3 py-2">
+                                <option value="">Select Creator</option>
+                            </select>
+                            
+                            <div class="flex items-center space-x-2">
+                                <input type="number" id="campaign-share" class="flex-1 border border-gray-300 rounded-md px-3 py-2" placeholder="40" min="10" max="90">
+                                <span class="text-sm text-gray-600">% share</span>
+                            </div>
+                            
+                            <button id="create-campaign" class="w-full bg-purple-600 text-white py-2 px-4 rounded hover:bg-purple-700 transition">
+                                Create Campaign
+                            </button>
+                        </div>
+                    </div>
+                    
+                    <div>
+                        <h4 class="font-medium mb-3">Generate Smart Link</h4>
+                        <div class="space-y-3">
+                            <select id="link-campaign" class="w-full border border-gray-300 rounded-md px-3 py-2">
+                                <option value="">Select Campaign</option>
+                            </select>
+                            
+                            <select id="link-offer" class="w-full border border-gray-300 rounded-md px-3 py-2">
+                                <option value="">Select Offer</option>
+                            </select>
+                            
+                            <button id="generate-link" class="w-full bg-orange-600 text-white py-2 px-4 rounded hover:bg-orange-700 transition">
+                                Generate Smart Link
+                            </button>
+                        </div>
+                        
+                        <div id="generated-link" class="mt-4 text-sm"></div>
+                    </div>
+                </div>
+            </div>
+
+            <!-- Analytics Dashboard -->
+            <div class="mt-8 bg-white rounded-lg shadow p-6">
+                <h3 class="text-xl font-semibold mb-4">📊 Analytics Dashboard</h3>
+                <div id="analytics-content">
+                    <p class="text-gray-600">Create a campaign and generate links to see analytics</p>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <script>
+        const API_BASE = 'http://localhost:8001';
+        
+        // Check API health on load
+        async function checkHealth() {
+            try {
+                const response = await axios.get(`${API_BASE}/health`);
+                document.getElementById('health-status').textContent = '●';
+                document.getElementById('health-status').className = 'text-2xl font-bold text-green-600';
+                document.getElementById('api-status').textContent = 'API Connected';
+                document.getElementById('api-status').className = 'px-2 py-1 bg-green-500 rounded';
+            } catch (error) {
+                document.getElementById('health-status').textContent = '●';
+                document.getElementById('health-status').className = 'text-2xl font-bold text-red-600';
+                document.getElementById('api-status').textContent = 'API Disconnected';
+                document.getElementById('api-status').className = 'px-2 py-1 bg-red-500 rounded';
+            }
+        }
+
+        // Load initial data
+        async function loadInitialData() {
+            try {
+                // Load offers count
+                const offersResponse = await axios.get(`${API_BASE}/v1/offers/stats`);
+                document.getElementById('offers-count').textContent = offersResponse.data.total_offers;
+                
+                // Load tenants count
+                const tenantsResponse = await axios.get(`${API_BASE}/v1/tenants`);
+                document.getElementById('tenants-count').textContent = tenantsResponse.data.count;
+                
+                // Load offers list
+                await loadOffers();
+                await loadTenants();
+                
+            } catch (error) {
+                console.error('Error loading initial data:', error);
+            }
+        }
+
+        // Load and display offers
+        async function loadOffers() {
+            try {
+                const response = await axios.get(`${API_BASE}/v1/offers`);
+                const offersList = document.getElementById('offers-list');
+                
+                if (response.data.length === 0) {
+                    offersList.innerHTML = '<p class="text-gray-500 text-sm">No offers available. Click "Sync Offers" to load from Trackier.</p>';
+                } else {
+                    offersList.innerHTML = response.data.map(offer => `
+                        <div class="flex justify-between items-center p-2 border rounded">
+                            <div>
+                                <div class="font-medium">${offer.brand}</div>
+                                <div class="text-sm text-gray-600">${offer.category} • ${offer.base_commission_pct}% commission</div>
+                            </div>
+                            <span class="px-2 py-1 bg-green-100 text-green-800 rounded text-xs">${offer.status}</span>
+                        </div>
+                    `).join('');
+                    
+                    // Populate offer dropdown
+                    const linkOfferSelect = document.getElementById('link-offer');
+                    linkOfferSelect.innerHTML = '<option value="">Select Offer</option>' + 
+                        response.data.map(offer => `<option value="${offer.offer_id}">${offer.brand} (${offer.category})</option>`).join('');
+                }
+            } catch (error) {
+                console.error('Error loading offers:', error);
+            }
+        }
+
+        // Load tenants for dropdown
+        async function loadTenants() {
+            try {
+                const response = await axios.get(`${API_BASE}/v1/tenants`);
+                const tenantSelect = document.getElementById('campaign-tenant');
+                tenantSelect.innerHTML = '<option value="">Select Creator</option>' + 
+                    response.data.tenants.map(tenant => `<option value="${tenant.tenant_id}">${tenant.name}</option>`).join('');
+            } catch (error) {
+                console.error('Error loading tenants:', error);
+            }
+        }
+
+        // Sync offers from Trackier
+        document.getElementById('sync-offers').addEventListener('click', async () => {
+            const button = document.getElementById('sync-offers');
+            button.textContent = 'Syncing...';
+            button.disabled = true;
+            
+            try {
+                const response = await axios.post(`${API_BASE}/v1/sync/offers`);
+                document.getElementById('last-sync').textContent = new Date().toLocaleString();
+                await loadInitialData(); // Refresh data
+                alert(`Sync completed! ${response.data.offers_processed} offers processed.`);
+            } catch (error) {
+                alert('Sync failed. Please try again.');
+            } finally {
+                button.textContent = 'Sync Offers from Trackier';
+                button.disabled = false;
+            }
+        });
+
+        // Create creator
+        document.getElementById('create-creator').addEventListener('click', async () => {
+            const name = document.getElementById('creator-name').value;
+            const email = document.getElementById('creator-email').value;
+            const phone = document.getElementById('creator-phone').value;
+            
+            if (!name || !email || !phone) {
+                alert('Please fill in all fields');
+                return;
+            }
+            
+            try {
+                const response = await axios.post(`${API_BASE}/v1/creators/signup`, {
+                    name, email, phone, brand_name: name + "'s Brand"
+                });
+                
+                document.getElementById('creator-result').innerHTML = `
+                    <div class="p-3 bg-green-100 text-green-800 rounded">
+                        ✅ Creator created successfully!<br>
+                        <strong>Tenant ID:</strong> ${response.data.tenant_id}<br>
+                        <strong>Share %:</strong> ${response.data.default_share_pct}%
+                    </div>
+                `;
+                
+                await loadTenants(); // Refresh tenant dropdown
+                
+            } catch (error) {
+                document.getElementById('creator-result').innerHTML = `
+                    <div class="p-3 bg-red-100 text-red-800 rounded">
+                        ❌ Error: ${error.response?.data?.detail || 'Creation failed'}
+                    </div>
+                `;
+            }
+        });
+
+        // Create campaign
+        document.getElementById('create-campaign').addEventListener('click', async () => {
+            const name = document.getElementById('campaign-name').value;
+            const tenantId = document.getElementById('campaign-tenant').value;
+            const sharePct = document.getElementById('campaign-share').value;
+            
+            if (!name || !tenantId) {
+                alert('Please fill in campaign name and select a creator');
+                return;
+            }
+            
+            try {
+                const response = await axios.post(`${API_BASE}/v1/campaigns`, {
+                    tenant_id: tenantId,
+                    name: name,
+                    share_pct: sharePct ? parseFloat(sharePct) : undefined
+                });
+                
+                alert(`Campaign "${response.data.name}" created successfully!`);
+                
+                // Add to campaign dropdown
+                const linkCampaignSelect = document.getElementById('link-campaign');
+                linkCampaignSelect.innerHTML += `<option value="${response.data.campaign_id}">${response.data.name}</option>`;
+                
+            } catch (error) {
+                alert('Campaign creation failed: ' + (error.response?.data?.detail || 'Unknown error'));
+            }
+        });
+
+        // Generate smart link
+        document.getElementById('generate-link').addEventListener('click', async () => {
+            const campaignId = document.getElementById('link-campaign').value;
+            const offerId = document.getElementById('link-offer').value;
+            
+            if (!campaignId || !offerId) {
+                alert('Please select both campaign and offer');
+                return;
+            }
+            
+            try {
+                const response = await axios.post(`${API_BASE}/v1/links`, {
+                    campaign_id: campaignId,
+                    offer_id: offerId
+                });
+                
+                document.getElementById('generated-link').innerHTML = `
+                    <div class="p-3 bg-blue-100 text-blue-800 rounded">
+                        <strong>Smart Link Generated:</strong><br>
+                        <a href="${response.data.smart_link}" target="_blank" class="underline break-all">
+                            ${response.data.smart_link}
+                        </a><br>
+                        <small>Slug: ${response.data.slug}</small>
+                    </div>
+                `;
+                
+            } catch (error) {
+                alert('Link generation failed: ' + (error.response?.data?.detail || 'Unknown error'));
+            }
+        });
+
+        // Initialize on page load
+        document.addEventListener('DOMContentLoaded', () => {
+            checkHealth();
+            loadInitialData();
+        });
+    </script>
+</body>
+</html> 

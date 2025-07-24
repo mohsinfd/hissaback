@@ -1,0 +1,1179 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Hissaback Demo Environment</title>
+    <style>
+        * {
+            box-sizing: border-box;
+            margin: 0;
+            padding: 0;
+        }
+
+        body {
+            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+            min-height: 100vh;
+            color: #333;
+        }
+
+        .container {
+            max-width: 1400px;
+            margin: 0 auto;
+            padding: 20px;
+        }
+
+        .header {
+            text-align: center;
+            color: white;
+            margin-bottom: 30px;
+        }
+
+        .header h1 {
+            font-size: 2.5rem;
+            margin-bottom: 10px;
+            text-shadow: 2px 2px 4px rgba(0,0,0,0.3);
+        }
+
+        .header p {
+            font-size: 1.2rem;
+            opacity: 0.9;
+        }
+
+        .demo-flow {
+            background: white;
+            border-radius: 20px;
+            padding: 30px;
+            box-shadow: 0 20px 40px rgba(0,0,0,0.1);
+            margin-bottom: 30px;
+        }
+
+        .flow-step {
+            background: #f8f9fa;
+            border-radius: 15px;
+            padding: 25px;
+            margin-bottom: 20px;
+            border-left: 5px solid #667eea;
+            transition: all 0.3s ease;
+        }
+
+        .flow-step:hover {
+            transform: translateY(-2px);
+            box-shadow: 0 10px 20px rgba(0,0,0,0.1);
+        }
+
+        .flow-step h3 {
+            color: #667eea;
+            margin-bottom: 15px;
+            font-size: 1.3rem;
+        }
+
+        .step-content {
+            display: grid;
+            grid-template-columns: 1fr 1fr;
+            gap: 20px;
+            align-items: start;
+        }
+
+        .demo-preview {
+            background: white;
+            border-radius: 10px;
+            padding: 20px;
+            border: 2px solid #e9ecef;
+        }
+
+        .demo-preview h4 {
+            color: #495057;
+            margin-bottom: 15px;
+        }
+
+        .creator-page-preview {
+            background: linear-gradient(135deg, #ff6b6b, #ee5a24);
+            color: white;
+            padding: 20px;
+            border-radius: 10px;
+            text-align: center;
+        }
+
+        .creator-page-preview h5 {
+            margin-bottom: 10px;
+            font-size: 1.1rem;
+        }
+
+        .offer-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(150px, 1fr));
+            gap: 10px;
+            margin-top: 15px;
+        }
+
+        .offer-card {
+            background: rgba(255,255,255,0.9);
+            color: #333;
+            padding: 10px;
+            border-radius: 8px;
+            text-align: center;
+            font-size: 0.9rem;
+        }
+
+        .btn {
+            background: linear-gradient(135deg, #667eea, #764ba2);
+            color: white;
+            border: none;
+            padding: 12px 24px;
+            border-radius: 8px;
+            cursor: pointer;
+            font-size: 1rem;
+            font-weight: 500;
+            transition: all 0.3s ease;
+            margin: 5px;
+        }
+
+        .btn:hover {
+            transform: translateY(-2px);
+            box-shadow: 0 5px 15px rgba(0,0,0,0.2);
+        }
+
+        .btn-success {
+            background: linear-gradient(135deg, #28a745, #20c997);
+        }
+
+        .btn-warning {
+            background: linear-gradient(135deg, #ffc107, #fd7e14);
+        }
+
+        .btn-info {
+            background: linear-gradient(135deg, #17a2b8, #6f42c1);
+        }
+
+        .form-group {
+            margin-bottom: 15px;
+        }
+
+        .form-group label {
+            display: block;
+            margin-bottom: 5px;
+            font-weight: 500;
+            color: #495057;
+        }
+
+        .form-group input, .form-group select {
+            width: 100%;
+            padding: 10px;
+            border: 2px solid #e9ecef;
+            border-radius: 8px;
+            font-size: 1rem;
+            transition: border-color 0.3s ease;
+        }
+
+        .form-group input:focus, .form-group select:focus {
+            outline: none;
+            border-color: #667eea;
+        }
+
+        .result-box {
+            background: #f8f9fa;
+            border: 2px solid #dee2e6;
+            border-radius: 12px;
+            padding: 20px;
+            margin-top: 15px;
+            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+            font-size: 1rem;
+            max-height: 400px;
+            overflow-y: auto;
+        }
+
+        .success-message {
+            background: linear-gradient(135deg, #d4edda 0%, #c3e6cb 100%);
+            border: 2px solid #28a745;
+            border-radius: 12px;
+            padding: 20px;
+            margin-top: 15px;
+            color: #155724;
+            font-weight: 500;
+        }
+
+        .success-message h4 {
+            color: #28a745;
+            margin-bottom: 15px;
+            font-size: 1.2rem;
+        }
+
+        .success-message p {
+            margin-bottom: 8px;
+            line-height: 1.5;
+        }
+
+        .data-preview {
+            background: rgba(255,255,255,0.7);
+            padding: 15px;
+            border-radius: 8px;
+            margin-top: 10px;
+            font-family: 'Courier New', monospace;
+            font-size: 0.9rem;
+        }
+
+        .widget-preview {
+            background: #f8f9fa;
+            border: 2px solid #dee2e6;
+            border-radius: 10px;
+            padding: 15px;
+            margin-top: 10px;
+        }
+
+        .widget-code {
+            background: #2d3748;
+            color: #e2e8f0;
+            padding: 15px;
+            border-radius: 8px;
+            font-family: 'Courier New', monospace;
+            font-size: 0.9rem;
+            overflow-x: auto;
+        }
+
+        .stats-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(200px, 1fr));
+            gap: 15px;
+            margin-top: 15px;
+        }
+
+        .stat-card {
+            background: white;
+            padding: 20px;
+            border-radius: 10px;
+            text-align: center;
+            box-shadow: 0 5px 15px rgba(0,0,0,0.1);
+        }
+
+        .stat-number {
+            font-size: 2rem;
+            font-weight: bold;
+            color: #667eea;
+            margin-bottom: 5px;
+        }
+
+        .stat-label {
+            color: #6c757d;
+            font-size: 0.9rem;
+        }
+
+        .tabs {
+            display: flex;
+            background: #e9ecef;
+            border-radius: 10px;
+            padding: 5px;
+            margin-bottom: 20px;
+        }
+
+        .tab {
+            flex: 1;
+            padding: 12px 20px;
+            text-align: center;
+            background: transparent;
+            border: none;
+            border-radius: 8px;
+            cursor: pointer;
+            font-weight: 500;
+            transition: all 0.3s ease;
+        }
+
+        .tab.active {
+            background: white;
+            color: #667eea;
+            box-shadow: 0 2px 10px rgba(0,0,0,0.1);
+        }
+
+        .tab-content {
+            display: none;
+        }
+
+        .tab-content.active {
+            display: block;
+        }
+
+        .quick-actions {
+            display: flex;
+            gap: 10px;
+            flex-wrap: wrap;
+            margin-bottom: 20px;
+        }
+
+        .quick-btn {
+            background: linear-gradient(135deg, #6c757d, #495057);
+            color: white;
+            border: none;
+            padding: 8px 16px;
+            border-radius: 6px;
+            cursor: pointer;
+            font-size: 0.9rem;
+            transition: all 0.3s ease;
+        }
+
+        .quick-btn:hover {
+            transform: translateY(-1px);
+            box-shadow: 0 3px 10px rgba(0,0,0,0.2);
+        }
+
+        .loading {
+            text-align: center;
+            padding: 20px;
+            color: #6c757d;
+        }
+
+        .spinner {
+            border: 3px solid #f3f3f3;
+            border-top: 3px solid #667eea;
+            border-radius: 50%;
+            width: 30px;
+            height: 30px;
+            animation: spin 1s linear infinite;
+            margin: 0 auto 10px;
+        }
+
+        @keyframes spin {
+            0% { transform: rotate(0deg); }
+            100% { transform: rotate(360deg); }
+        }
+    </style>
+</head>
+<body>
+    <div class="container">
+        <div class="header">
+            <h1>🚀 Hissaback Demo Environment</h1>
+            <p>Complete Creator Journey & Platform Demo</p>
+        </div>
+
+        <!-- Step 1: Creator Onboarding -->
+        <div class="demo-flow">
+            <div class="flow-step">
+                <h3>🎯 Step 1: Creator Onboarding</h3>
+                <div class="step-content">
+                    <div>
+                        <h4>Create a New Creator Account</h4>
+                        <div class="form-group">
+                            <label>Creator Name</label>
+                            <input type="text" id="creator-name" placeholder="John's Tech Reviews" value="John's Tech Reviews">
+        </div>
+                        <div class="form-group">
+                            <label>Email</label>
+                            <input type="email" id="creator-email" placeholder="john@example.com" value="john@techreviews.com">
+                    </div>
+                        <div class="form-group">
+                            <label>Phone</label>
+                            <input type="tel" id="creator-phone" placeholder="+919876543210" value="+919876543210">
+                    </div>
+                        <div class="form-group">
+                            <label>Brand Name</label>
+                            <input type="text" id="creator-brand" placeholder="TechReviews" value="TechReviews">
+                        </div>
+                        <button class="btn" onclick="createCreator()">🚀 Create Creator Account</button>
+                        <div id="creator-result" class="result-box" style="display: none;"></div>
+                    </div>
+                    <div class="demo-preview">
+                        <h4>What Creator Gets:</h4>
+                        <div class="creator-page-preview">
+                            <h5>🎉 Welcome to Hissaback!</h5>
+                            <p>Your creator page: <strong>creator.hissaback.com/techreviews</strong></p>
+                            <p>Start earning by sharing offers with your audience!</p>
+                        </div>
+                        <div class="stats-grid">
+                    <div class="stat-card">
+                                <div class="stat-number">₹0</div>
+                                <div class="stat-label">Total Earnings</div>
+                    </div>
+                    <div class="stat-card">
+                                <div class="stat-number">0</div>
+                                <div class="stat-label">Active Campaigns</div>
+                    </div>
+                </div>
+            </div>
+                </div>
+            </div>
+        </div>
+
+        <!-- Step 2: Page Customization -->
+        <div class="demo-flow">
+            <div class="flow-step">
+                <h3>🎨 Step 2: Customize Your Creator Page</h3>
+                <div class="step-content">
+                    <div>
+                        <h4>Branding & Theme Settings</h4>
+                        <div class="form-group">
+                            <label>Primary Color</label>
+                            <input type="color" id="primary-color" value="#ff6b6b">
+                        </div>
+                        <div class="form-group">
+                            <label>Secondary Color</label>
+                            <input type="color" id="secondary-color" value="#ee5a24">
+                        </div>
+                        <div class="form-group">
+                            <label>Page Layout</label>
+                            <select id="page-layout">
+                                <option value="grid">Grid Layout</option>
+                                <option value="list">List Layout</option>
+                                <option value="carousel">Carousel</option>
+                            </select>
+                        </div>
+                        <div class="form-group">
+                            <label>Welcome Message</label>
+                            <input type="text" id="welcome-message" placeholder="Welcome to my deals page!" value="Welcome to TechReviews - Best Tech Deals!">
+                        </div>
+                        <button class="btn btn-success" onclick="updateCreatorPage()">🎨 Update Page Design</button>
+                        <div id="customization-result" class="result-box" style="display: none;"></div>
+                    </div>
+                    <div class="demo-preview">
+                        <h4>Live Preview:</h4>
+                        <div class="creator-page-preview" id="live-preview">
+                            <h5>🎉 Welcome to TechReviews - Best Tech Deals!</h5>
+                            <p>Your creator page: <strong>creator.hissaback.com/techreviews</strong></p>
+                            <div class="offer-grid">
+                                <div class="offer-card">📱 iPhone Deals</div>
+                                <div class="offer-card">💻 Laptop Offers</div>
+                                <div class="offer-card">🎧 Audio Gear</div>
+                                <div class="offer-card">📺 Smart TVs</div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+                    </div>
+
+        <!-- Step 3: Offer Selection -->
+        <div class="demo-flow">
+            <div class="flow-step">
+                <h3>🛍️ Step 3: Select Offers for Your Page</h3>
+                <div class="step-content">
+                    <div>
+                        <h4>Available Offers from Trackier</h4>
+                        <div class="quick-actions">
+                            <button class="btn" onclick="syncOffers()">🔄 Sync Latest Offers</button>
+                            <button class="btn" onclick="loadOffers()">📋 View All Offers</button>
+                        </div>
+                        <div class="form-group">
+                            <label>Filter by Category</label>
+                            <select id="offer-category" onchange="filterOffers()">
+                                <option value="">All Categories</option>
+                                <option value="Electronics">Electronics</option>
+                                <option value="Fashion">Fashion</option>
+                                <option value="Home">Home & Living</option>
+                                <option value="Food">Food & Dining</option>
+                            </select>
+                        </div>
+                        <div id="offers-selection" class="result-box" style="display: none;"></div>
+                    </div>
+                    <div class="demo-preview">
+                        <h4>Selected Offers:</h4>
+                        <div id="selected-offers">
+                            <div class="offer-card" style="background: #e8f5e8; border: 2px solid #28a745;">
+                                <strong>✅ Flipkart Electronics</strong><br>
+                                6% commission<br>
+                                <small>Selected</small>
+                </div>
+                            <div class="offer-card" style="background: #e8f5e8; border: 2px solid #28a745;">
+                                <strong>✅ Amazon Prime</strong><br>
+                                8% commission<br>
+                                <small>Selected</small>
+            </div>
+                            <div class="offer-card">
+                                <strong>Myntra Fashion</strong><br>
+                                5% commission<br>
+                                <small>Click to select</small>
+                            </div>
+                            <div class="offer-card">
+                                <strong>Swiggy Food</strong><br>
+                                3% commission<br>
+                                <small>Click to select</small>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <!-- Step 4: Campaign Creation -->
+        <div class="demo-flow">
+            <div class="flow-step">
+                <h3>🎯 Step 4: Create Campaigns & Generate Links</h3>
+                <div class="step-content">
+                    <div>
+                        <h4>Campaign Builder</h4>
+                        <div class="form-group">
+                            <label>Campaign Name</label>
+                            <input type="text" id="campaign-name" placeholder="Tech Deals Campaign" value="Tech Deals Campaign">
+                        </div>
+                        <div class="form-group">
+                            <label>Commission Split (%)</label>
+                            <input type="number" id="campaign-share" placeholder="50" value="60" min="0" max="100">
+                        </div>
+                        <div class="form-group">
+                            <label>Selected Offers</label>
+                            <div id="selected-offers" style="background: #f8f9fa; padding: 10px; border-radius: 8px; margin-top: 5px;">
+                                <div>✅ Flipkart Electronics (6% → 3.6%)</div>
+                                <div>✅ Amazon Prime (8% → 4.8%)</div>
+                            </div>
+                        </div>
+                        <button class="btn btn-success" onclick="createCampaign()">🎯 Create Campaign</button>
+                        <div id="campaign-result" class="result-box" style="display: none;"></div>
+                    </div>
+                    <div class="demo-preview">
+                        <h4>Generated Smart Links:</h4>
+                        <div id="smart-links">
+                            <div class="widget-preview">
+                                <strong>🔗 Flipkart Electronics</strong><br>
+                                <code id="flipkart-link">https://hissaback.app/go/tech-flipkart?publisher_id=tnt_101&campaign_id=camp_123&click_id={{click_id}}</code>
+                                <button class="btn btn-info" onclick="copyLink('flipkart')">📋 Copy</button>
+                            </div>
+                            <div class="widget-preview">
+                                <strong>🔗 Amazon Prime</strong><br>
+                                <code id="amazon-link">https://hissaback.app/go/tech-amazon?publisher_id=tnt_101&campaign_id=camp_123&click_id={{click_id}}</code>
+                                <button class="btn btn-info" onclick="copyLink('amazon')">📋 Copy</button>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <!-- Step 5: Widget Generation -->
+        <div class="demo-flow">
+            <div class="flow-step">
+                <h3>🔧 Step 5: Generate Widgets & Embeds</h3>
+                <div class="step-content">
+                    <div>
+                        <h4>Widget Generator</h4>
+                        <div class="form-group">
+                            <label>Widget Type</label>
+                            <select id="widget-type" onchange="updateWidgetPreview()">
+                                <option value="button">Single Offer Button</option>
+                                <option value="grid">Offer Grid</option>
+                                <option value="carousel">Offer Carousel</option>
+                                <option value="category">Category Widget</option>
+                            </select>
+                        </div>
+                        <div class="form-group">
+                            <label>Widget Style</label>
+                            <select id="widget-style" onchange="updateWidgetPreview()">
+                                <option value="modern">Modern</option>
+                                <option value="minimal">Minimal</option>
+                                <option value="colorful">Colorful</option>
+                            </select>
+                        </div>
+                        <div class="form-group">
+                            <label>Target Offer/Category</label>
+                            <select id="widget-target">
+                                <option value="flipkart">Flipkart Electronics</option>
+                                <option value="amazon">Amazon Prime</option>
+                                <option value="electronics">All Electronics</option>
+                            </select>
+                    </div>
+                        <button class="btn btn-warning" onclick="generateWidget()">🔧 Generate Widget</button>
+                        <div id="widget-result" class="result-box" style="display: none;"></div>
+                </div>
+                    <div class="demo-preview">
+                        <h4>Widget Preview & Code:</h4>
+                        <div id="widget-preview" class="widget-preview">
+                            <div style="text-align: center; padding: 20px; background: linear-gradient(135deg, #667eea, #764ba2); color: white; border-radius: 8px;">
+                                <h5>🛍️ Get ₹240 Cashback</h5>
+                                <p>on Flipkart Electronics</p>
+                                <button style="background: white; color: #667eea; border: none; padding: 10px 20px; border-radius: 6px; font-weight: bold; cursor: pointer;">
+                                    Shop Now
+                                </button>
+            </div>
+                        </div>
+                        <div class="widget-code">
+&lt;script src="https://hissaback.app/widget.js"&gt;&lt;/script&gt;
+&lt;div id="hissaback-widget" 
+     data-offer="flipkart" 
+     data-style="modern"&gt;&lt;/div&gt;
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <!-- Step 6: Analytics & Performance -->
+        <div class="demo-flow">
+            <div class="flow-step">
+                <h3>📊 Step 6: Track Performance & Earnings</h3>
+                <div class="step-content">
+                    <div>
+                        <h4>Analytics Dashboard</h4>
+                <div class="quick-actions">
+                            <button class="btn" onclick="getAnalytics()">📈 Load Analytics</button>
+                            <button class="btn" onclick="getCreatorStats()">👤 Creator Stats</button>
+                </div>
+                        <div id="analytics-result" class="result-box" style="display: none;"></div>
+            </div>
+                    <div class="demo-preview">
+                        <h4>Performance Overview:</h4>
+                        <div class="stats-grid">
+                            <div class="stat-card">
+                                <div class="stat-number">₹2,450</div>
+                                <div class="stat-label">Total Earnings</div>
+        </div>
+                            <div class="stat-card">
+                                <div class="stat-number">156</div>
+                                <div class="stat-label">Clicks</div>
+                        </div>
+                            <div class="stat-card">
+                                <div class="stat-number">23</div>
+                                <div class="stat-label">Conversions</div>
+                        </div>
+                            <div class="stat-card">
+                                <div class="stat-number">14.7%</div>
+                                <div class="stat-label">Conversion Rate</div>
+                    </div>
+                </div>
+                        <div style="background: white; padding: 15px; border-radius: 8px; margin-top: 15px;">
+                            <h5>Recent Activity:</h5>
+                            <div style="font-size: 0.9rem; color: #6c757d;">
+                                <div>✅ Flipkart Electronics - ₹180 earned</div>
+                                <div>✅ Amazon Prime - ₹320 earned</div>
+                                <div>⏳ Myntra Fashion - Pending approval</div>
+            </div>
+        </div>
+                    </div>
+                    </div>
+                </div>
+            </div>
+
+        <!-- API Integration Demo -->
+        <div class="demo-flow">
+            <div class="flow-step">
+                <h3>🔌 Step 7: API Integration (For Developers)</h3>
+                <div class="step-content">
+                    <div>
+                        <h4>API Endpoints</h4>
+                <div class="quick-actions">
+                            <button class="btn" onclick="testAPIEndpoints()">🔍 Test APIs</button>
+                            <button class="btn" onclick="showAPIDocs()">📚 API Docs</button>
+                </div>
+                        <div class="form-group">
+                            <label>API Key</label>
+                            <input type="text" value="hissaback_api_key_12345" readonly style="background: #f8f9fa;">
+            </div>
+                        <div id="api-result" class="result-box" style="display: none;"></div>
+        </div>
+                    <div class="demo-preview">
+                        <h4>API Response Examples:</h4>
+                        <div class="widget-code">
+// Get all offers
+GET /v1/offers
+{
+  "offers": [
+    {
+      "offer_id": "camp_1234",
+      "brand": "Flipkart",
+      "commission_pct": 6.0
+    }
+  ]
+}
+
+// Create campaign
+POST /v1/campaigns
+{
+  "tenant_id": "tnt_101",
+  "name": "My Campaign",
+  "share_pct": 50
+}
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <script>
+        // API Configuration
+        const API_BASE = '/v1';
+        const AUTH_TOKEN = 'Bearer mock_jwt_creator_tnt_101';
+
+        // Step 1: Creator Creation
+        async function createCreator() {
+            const name = document.getElementById('creator-name').value;
+            const email = document.getElementById('creator-email').value;
+            const phone = document.getElementById('creator-phone').value;
+            const brand = document.getElementById('creator-brand').value;
+
+            if (!name || !email || !phone) {
+                showResult('creator-result', 'Please fill in all required fields', true);
+                return;
+            }
+
+            showLoading('creator-result');
+
+            try {
+                const response = await fetch(`${API_BASE}/creators/signup`, {
+                    method: 'POST',
+                    headers: { 'Content-Type': 'application/json' },
+                    body: JSON.stringify({ name, email, phone, brand_name: brand })
+                });
+
+                const result = await response.json();
+                
+                if (response.ok) {
+                    showResult('creator-result', {
+                        status: 'success',
+                        message: `✅ Creator "${name}" created successfully!`,
+                        data: {
+                            tenant_id: result.tenant_id,
+                            creator_url: `creator.hissaback.com/${brand.toLowerCase()}`,
+                            dashboard_url: '/creator_dashboard.html'
+                        }
+                    });
+                } else {
+                    showResult('creator-result', `❌ Failed to create creator: ${result.detail || 'Unknown error'}`, true);
+                }
+            } catch (error) {
+                showResult('creator-result', `❌ Error: ${error.message}`, true);
+            }
+        }
+
+        // Step 2: Page Customization
+        function updateCreatorPage() {
+            const primaryColor = document.getElementById('primary-color').value;
+            const secondaryColor = document.getElementById('secondary-color').value;
+            const layout = document.getElementById('page-layout').value;
+            const message = document.getElementById('welcome-message').value;
+
+            // Update live preview
+            const preview = document.getElementById('live-preview');
+            preview.style.background = `linear-gradient(135deg, ${primaryColor}, ${secondaryColor})`;
+
+            showResult('customization-result', {
+                status: 'success',
+                message: '✅ Creator page updated successfully!',
+                data: {
+                    primary_color: primaryColor,
+                    secondary_color: secondaryColor,
+                    layout: layout,
+                    welcome_message: message,
+                    preview_url: 'creator.hissaback.com/techreviews'
+                }
+            });
+        }
+
+        // Step 3: Offer Management
+        async function syncOffers() {
+            showLoading('offers-selection');
+            
+            try {
+                const response = await fetch(`${API_BASE}/sync/offers`, {
+                    method: 'POST',
+                    headers: { 'Content-Type': 'application/json' }
+                });
+
+                const result = await response.json();
+                
+                if (response.ok) {
+                    showResult('offers-selection', {
+                        status: 'success',
+                        message: '✅ Offers synced successfully!',
+                        data: {
+                            offers_processed: result.offers_processed || 4,
+                            added: result.added || 0,
+                            updated: result.updated || 4,
+                            deactivated: result.deactivated || 0
+                        }
+                    });
+                } else {
+                    showResult('offers-selection', `❌ Sync failed: ${result.detail || 'Unknown error'}`, true);
+                }
+            } catch (error) {
+                showResult('offers-selection', `❌ Error: ${error.message}`, true);
+            }
+        }
+
+        async function loadOffers() {
+            showLoading('offers-selection');
+            
+            try {
+                const response = await fetch(`${API_BASE}/offers`);
+                const result = await response.json();
+                
+                if (response.ok) {
+                    // The API returns offers directly as an array, not wrapped in an 'offers' property
+                    const offers = Array.isArray(result) ? result : [];
+                    
+                    if (offers.length === 0) {
+                        document.getElementById('offers-selection').innerHTML = `
+                            <div class="success-message">
+                                <h4>📋 Available Offers</h4>
+                                <p>No offers available at the moment.</p>
+                            </div>
+                        `;
+                    } else {
+                        const offersHtml = offers.map(offer => `
+                            <div class="offer-card" onclick="selectOffer('${offer.offer_id}')">
+                                <strong>${offer.brand}</strong><br>
+                                ${offer.base_commission_pct}% commission<br>
+                                <small>Click to select</small>
+                            </div>
+                        `).join('');
+                        
+                        document.getElementById('offers-selection').innerHTML = `
+                            <div class="success-message">
+                                <h4>📋 Available Offers (${offers.length})</h4>
+                                <div class="offer-grid">
+                                    ${offersHtml}
+                                </div>
+                            </div>
+                        `;
+                    }
+                    document.getElementById('offers-selection').style.display = 'block';
+                } else {
+                    showResult('offers-selection', `❌ Failed to load offers: ${result.detail || 'Unknown error'}`, true);
+                }
+            } catch (error) {
+                console.error('Error loading offers:', error);
+                showResult('offers-selection', `❌ Error: ${error.message}`, true);
+            }
+        }
+
+        function filterOffers() {
+            const category = document.getElementById('offer-category').value;
+            // Simulate filtering
+            showResult('offers-selection', `🔍 Filtered offers for category: ${category || 'All'}`);
+        }
+
+        // Dynamic Campaign Creation
+        async function createCampaign() {
+            const campaignName = document.getElementById('campaign-name').value;
+            const sharePct = document.getElementById('campaign-share').value;
+            
+            if (!campaignName) {
+                alert('Please enter a campaign name');
+                return;
+            }
+
+            showLoading('campaign-result');
+
+            try {
+                // Create campaign
+                const campaignResponse = await fetch(`${API_BASE}/campaigns`, {
+                    method: 'POST',
+                    headers: {
+                        'Content-Type': 'application/json',
+                        'Authorization': AUTH_TOKEN
+                    },
+                    body: JSON.stringify({
+                        tenant_id: 'tnt_101',
+                        name: campaignName,
+                        share_pct: parseInt(sharePct)
+                    })
+                });
+
+                if (!campaignResponse.ok) {
+                    throw new Error(`Campaign creation failed: ${campaignResponse.statusText}`);
+                }
+
+                const campaignData = await campaignResponse.json();
+                
+                // Generate smart links for the offers
+                const offers = [
+                    { offer_id: 'camp_1234', brand: 'Flipkart Electronics' },
+                    { offer_id: 'camp_5678', brand: 'Amazon Prime' }
+                ];
+
+                const generatedLinks = [];
+                
+                for (const offer of offers) {
+                    try {
+                        const linkResponse = await fetch(`${API_BASE}/links`, {
+                            method: 'POST',
+                            headers: {
+                                'Content-Type': 'application/json',
+                                'Authorization': AUTH_TOKEN
+                            },
+                            body: JSON.stringify({
+                                campaign_id: campaignData.campaign_id,
+                                offer_id: offer.offer_id
+                            })
+                        });
+
+                        if (linkResponse.ok) {
+                            const linkData = await linkResponse.json();
+                            generatedLinks.push({
+                                brand: offer.brand,
+                                link: linkData.smart_link
+                            });
+                        }
+                    } catch (error) {
+                        console.error(`Failed to generate link for ${offer.brand}:`, error);
+                    }
+                }
+
+                // Update the UI with real data
+                showResult('campaign-result', {
+                    status: 'success',
+                    message: `Campaign "${campaignName}" created successfully!`,
+                    data: {
+                        campaign_id: campaignData.campaign_id,
+                        smart_links_generated: generatedLinks.length,
+                        total_commission_potential: '₹4,200/month'
+                    }
+                });
+
+                // Update smart links display
+                updateSmartLinksDisplay(generatedLinks);
+
+            } catch (error) {
+                console.error('Campaign creation error:', error);
+                showResult('campaign-result', {
+                    status: 'error',
+                    message: `Failed to create campaign: ${error.message}`
+                }, true);
+            }
+        }
+
+        function updateSmartLinksDisplay(generatedLinks) {
+            const smartLinksContainer = document.getElementById('smart-links');
+            
+            if (generatedLinks.length > 0) {
+                let linksHTML = '';
+                generatedLinks.forEach((linkData, index) => {
+                    linksHTML += `
+                        <div class="widget-preview">
+                            <strong>🔗 ${linkData.brand}</strong><br>
+                            <code id="link-${index}">${linkData.link}</code>
+                            <button class="btn btn-info" onclick="copyLinkById('link-${index}')">📋 Copy</button>
+                        </div>
+                    `;
+                });
+                smartLinksContainer.innerHTML = linksHTML;
+            }
+        }
+
+        function copyLinkById(elementId) {
+            const element = document.getElementById(elementId);
+            if (element) {
+                navigator.clipboard.writeText(element.textContent).then(() => {
+                    alert('✅ Link copied to clipboard!');
+                });
+            }
+        }
+
+        function copyLink(type) {
+            const element = document.getElementById(`${type}-link`);
+            if (element) {
+                navigator.clipboard.writeText(element.textContent).then(() => {
+                    alert('✅ Link copied to clipboard!');
+                });
+            }
+        }
+
+        // Step 5: Widget Generation
+        function updateWidgetPreview() {
+            const type = document.getElementById('widget-type').value;
+            const style = document.getElementById('widget-style').value;
+            const target = document.getElementById('widget-target').value;
+
+            const preview = document.getElementById('widget-preview');
+            
+            if (type === 'button') {
+                preview.innerHTML = `
+                    <div style="text-align: center; padding: 20px; background: linear-gradient(135deg, #667eea, #764ba2); color: white; border-radius: 8px;">
+                        <h5>🛍️ Get ₹240 Cashback</h5>
+                        <p>on ${target === 'flipkart' ? 'Flipkart Electronics' : 'Amazon Prime'}</p>
+                        <button style="background: white; color: #667eea; border: none; padding: 10px 20px; border-radius: 6px; font-weight: bold; cursor: pointer;">
+                            Shop Now
+                        </button>
+                    </div>
+                `;
+            } else if (type === 'grid') {
+                preview.innerHTML = `
+                    <div style="display: grid; grid-template-columns: repeat(2, 1fr); gap: 10px;">
+                        <div style="background: #f8f9fa; padding: 15px; border-radius: 8px; text-align: center;">
+                            <h6>📱 Flipkart</h6>
+                            <p>6% cashback</p>
+                        </div>
+                        <div style="background: #f8f9fa; padding: 15px; border-radius: 8px; text-align: center;">
+                            <h6>🛒 Amazon</h6>
+                            <p>8% cashback</p>
+                        </div>
+                    </div>
+                `;
+            }
+        }
+
+        function generateWidget() {
+            const type = document.getElementById('widget-type').value;
+            const style = document.getElementById('widget-style').value;
+            const target = document.getElementById('widget-target').value;
+
+            const widgetCode = `
+&lt;script src="https://hissaback.app/widget.js"&gt;&lt;/script&gt;
+&lt;div id="hissaback-widget" 
+     data-offer="${target}" 
+     data-style="${style}"
+     data-type="${type}"&gt;&lt;/div&gt;
+            `;
+
+            showResult('widget-result', {
+                status: 'success',
+                message: '✅ Widget generated successfully!',
+                data: {
+                    widget_type: type,
+                    widget_style: style,
+                    target_offer: target,
+                    embed_code: widgetCode
+                }
+            });
+        }
+
+        // Step 6: Analytics
+        async function getAnalytics() {
+            showLoading('analytics-result');
+            
+            try {
+                const response = await fetch(`${API_BASE}/creator/stats`);
+                const result = await response.json();
+                
+                if (response.ok) {
+                    showResult('analytics-result', {
+                        status: 'success',
+                        message: '✅ Analytics loaded successfully!',
+                        data: {
+                            total_earnings: '₹2,450',
+                            total_clicks: 156,
+                            total_conversions: 23,
+                            conversion_rate: '14.7%',
+                            top_performing_offer: 'Flipkart Electronics',
+                            monthly_growth: '+23%'
+                        }
+                    });
+                } else {
+                    showResult('analytics-result', `❌ Failed to load analytics: ${result.detail || 'Unknown error'}`, true);
+                }
+            } catch (error) {
+                showResult('analytics-result', `❌ Error: ${error.message}`, true);
+            }
+        }
+
+        async function getCreatorStats() {
+            showLoading('analytics-result');
+            
+            try {
+                const response = await fetch(`${API_BASE}/creator/campaigns`);
+                const result = await response.json();
+                
+                if (response.ok) {
+                    showResult('analytics-result', {
+                        status: 'success',
+                        message: '✅ Creator stats loaded successfully!',
+                        data: {
+                            active_campaigns: result.campaigns?.length || 2,
+                            total_links_generated: 8,
+                            average_commission_rate: '5.2%',
+                            audience_reach: '12.5K followers'
+                        }
+                    });
+                } else {
+                    showResult('analytics-result', `❌ Failed to load stats: ${result.detail || 'Unknown error'}`, true);
+                }
+            } catch (error) {
+                showResult('analytics-result', `❌ Error: ${error.message}`, true);
+            }
+        }
+
+        // Step 7: API Testing
+        async function testAPIEndpoints() {
+            showLoading('api-result');
+            
+            const endpoints = [
+                { name: 'Health Check', url: '/health' },
+                { name: 'Offers', url: '/v1/offers' },
+                { name: 'Campaigns', url: '/v1/campaigns' },
+                { name: 'Creator Stats', url: '/v1/creator/stats' }
+            ];
+
+            const results = [];
+            
+            for (const endpoint of endpoints) {
+                try {
+                    const response = await fetch(`${API_BASE}${endpoint.url}`);
+                    results.push({
+                        endpoint: endpoint.name,
+                        status: response.status,
+                        working: response.ok
+                    });
+                } catch (error) {
+                    results.push({
+                        endpoint: endpoint.name,
+                        status: 'Error',
+                        working: false
+                    });
+                }
+            }
+
+            const workingCount = results.filter(r => r.working).length;
+            
+            showResult('api-result', {
+                status: 'success',
+                message: `✅ API Test Complete: ${workingCount}/${endpoints.length} endpoints working`,
+                data: {
+                    results: results,
+                    api_base_url: API_BASE,
+                    documentation_url: '/docs'
+                }
+            });
+        }
+
+        function showAPIDocs() {
+            window.open('/docs', '_blank');
+        }
+
+        // Utility Functions
+        function showResult(elementId, data, isError = false) {
+            const element = document.getElementById(elementId);
+            element.style.display = 'block';
+            element.className = `result-box ${isError ? 'error' : 'success'}`;
+            
+            if (typeof data === 'object') {
+                if (data.status === 'success') {
+                    element.innerHTML = `
+                        <div class="success-message">
+                            <h4>${data.message}</h4>
+                            ${data.data ? `
+                                <div class="data-preview">
+                                    <strong>Details:</strong><br>
+                                    ${Object.entries(data.data).map(([key, value]) => 
+                                        `<strong>${key}:</strong> ${value}<br>`
+                                    ).join('')}
+                                </div>
+                            ` : ''}
+                        </div>
+                    `;
+                } else {
+                    element.innerHTML = `<div style="color: #dc3545;">❌ ${data.message || 'Unknown error'}</div>`;
+                }
+            } else {
+                element.textContent = data;
+            }
+        }
+
+        function showLoading(elementId) {
+            const element = document.getElementById(elementId);
+            element.style.display = 'block';
+            element.innerHTML = `
+                <div class="loading">
+                    <div class="spinner"></div>
+                    Loading...
+                </div>
+            `;
+        }
+
+        function selectOffer(offerId) {
+            alert(`✅ Offer ${offerId} selected! This would be added to your campaign.`);
+        }
+
+        // Initialize
+        document.addEventListener('DOMContentLoaded', function() {
+            // Auto-populate with demo data
+            updateWidgetPreview();
+        });
+    </script>
+</body>
+</html> 

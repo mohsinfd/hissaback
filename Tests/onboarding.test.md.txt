@@ -1,0 +1,12 @@
+# Test: Creator Onboarding
+
+## Scenario: Successful sign‑up
+*Given* valid details & OTP  
+*When* user completes onboarding.flow  
+*Then* JSON store `tenants` contains exactly one new object with keys `tenant_id`, `pid`, `default_share_pct`.  
+*And* event `creator.onboarded` is emitted.
+
+## Scenario: Duplicate phone
+*Given* phone already exists  
+*When* OTP verified  
+*Then* flow aborts with message “Account already exists” and no new tenant is created.

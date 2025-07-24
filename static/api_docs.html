@@ -1,0 +1,680 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Hissaback API Documentation</title>
+    <style>
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+
+        body {
+            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+            min-height: 100vh;
+            padding: 20px;
+        }
+
+        .container {
+            max-width: 1400px;
+            margin: 0 auto;
+            background: white;
+            border-radius: 20px;
+            box-shadow: 0 20px 40px rgba(0,0,0,0.1);
+            overflow: hidden;
+        }
+
+        .header {
+            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+            color: white;
+            padding: 30px;
+            text-align: center;
+        }
+
+        .header h1 {
+            font-size: 2.5rem;
+            margin-bottom: 10px;
+        }
+
+        .header p {
+            font-size: 1.1rem;
+            opacity: 0.9;
+        }
+
+        .content {
+            padding: 30px;
+        }
+
+        .api-section {
+            margin-bottom: 40px;
+            border: 1px solid #e9ecef;
+            border-radius: 10px;
+            overflow: hidden;
+        }
+
+        .section-header {
+            background: #f8f9fa;
+            padding: 20px;
+            border-bottom: 1px solid #e9ecef;
+        }
+
+        .section-header h2 {
+            color: #333;
+            margin-bottom: 10px;
+            display: flex;
+            align-items: center;
+            gap: 10px;
+        }
+
+        .section-header p {
+            color: #6c757d;
+            font-size: 1rem;
+        }
+
+        .endpoint {
+            padding: 20px;
+            border-bottom: 1px solid #e9ecef;
+        }
+
+        .endpoint:last-child {
+            border-bottom: none;
+        }
+
+        .endpoint-header {
+            display: flex;
+            align-items: center;
+            gap: 15px;
+            margin-bottom: 10px;
+        }
+
+        .method {
+            padding: 5px 12px;
+            border-radius: 5px;
+            font-weight: bold;
+            font-size: 0.9rem;
+            min-width: 80px;
+            text-align: center;
+        }
+
+        .method.get { background: #d4edda; color: #155724; }
+        .method.post { background: #cce5ff; color: #004085; }
+        .method.put { background: #fff3cd; color: #856404; }
+        .method.delete { background: #f8d7da; color: #721c24; }
+
+        .endpoint-path {
+            font-family: 'Courier New', monospace;
+            font-weight: bold;
+            color: #333;
+        }
+
+        .endpoint-description {
+            color: #6c757d;
+            margin-bottom: 10px;
+        }
+
+        .endpoint-details {
+            background: #f8f9fa;
+            padding: 15px;
+            border-radius: 5px;
+            font-size: 0.9rem;
+        }
+
+        .endpoint-details strong {
+            color: #333;
+        }
+
+        .auth-required {
+            background: #fff3cd;
+            color: #856404;
+            padding: 5px 10px;
+            border-radius: 3px;
+            font-size: 0.8rem;
+            display: inline-block;
+            margin-top: 5px;
+        }
+
+        .quick-links {
+            background: #e9ecef;
+            padding: 20px;
+            border-radius: 10px;
+            margin-bottom: 30px;
+        }
+
+        .quick-links h3 {
+            margin-bottom: 15px;
+            color: #333;
+        }
+
+        .quick-links ul {
+            list-style: none;
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(250px, 1fr));
+            gap: 10px;
+        }
+
+        .quick-links li {
+            background: white;
+            padding: 10px 15px;
+            border-radius: 5px;
+            border-left: 4px solid #667eea;
+        }
+
+        .quick-links a {
+            color: #667eea;
+            text-decoration: none;
+            font-weight: 500;
+        }
+
+        .quick-links a:hover {
+            text-decoration: underline;
+        }
+
+        .user-guide {
+            background: #d1ecf1;
+            padding: 20px;
+            border-radius: 10px;
+            margin-bottom: 30px;
+        }
+
+        .user-guide h3 {
+            color: #0c5460;
+            margin-bottom: 15px;
+        }
+
+        .user-guide ol {
+            color: #0c5460;
+            padding-left: 20px;
+        }
+
+        .user-guide li {
+            margin-bottom: 8px;
+        }
+    </style>
+</head>
+<body>
+    <div class="container">
+        <div class="header">
+            <h1>🔗 Hissaback API Documentation</h1>
+            <p>Complete API reference for creators, admins, and end-users</p>
+        </div>
+
+        <div class="content">
+            <div class="user-guide">
+                <h3>🚀 Quick Start Guide</h3>
+                <ol>
+                    <li><strong>Creators</strong>: Use Creator APIs to manage campaigns and view earnings</li>
+                    <li><strong>Admins</strong>: Use Admin APIs to manage platform operations</li>
+                    <li><strong>End-Users</strong>: Use End-User APIs to interact with smart links</li>
+                    <li><strong>Integrations</strong>: Use Trackier APIs to sync external data</li>
+                </ol>
+            </div>
+
+            <div class="quick-links">
+                <h3>🔗 Quick Links</h3>
+                <ul>
+                    <li><a href="#creator-apis">👥 Creator APIs</a></li>
+                    <li><a href="#admin-apis">🏢 Admin APIs</a></li>
+                    <li><a href="#trackier-integration">🔗 Trackier Integration</a></li>
+                    <li><a href="#end-user-apis">🎯 End-User APIs</a></li>
+                    <li><a href="#authentication">🔐 Authentication</a></li>
+                    <li><a href="#analytics">📊 Analytics</a></li>
+                    <li><a href="#events-webhooks">🔄 Events & Webhooks</a></li>
+                </ul>
+            </div>
+
+            <!-- Creator APIs -->
+            <div class="api-section" id="creator-apis">
+                <div class="section-header">
+                    <h2>👥 Creator APIs</h2>
+                    <p>APIs for creators (publishers) to manage campaigns, view analytics, and track earnings</p>
+                </div>
+
+                <div class="endpoint">
+                    <div class="endpoint-header">
+                        <span class="method post">POST</span>
+                        <span class="endpoint-path">/v1/creators/signup</span>
+                    </div>
+                    <div class="endpoint-description">Register a new creator account</div>
+                    <div class="endpoint-details">
+                        <strong>Body:</strong> name, email, phone, brand_name (optional)<br>
+                        <strong>Response:</strong> tenant_id, name, trackier_pid, default_share_pct, api_key
+                    </div>
+                </div>
+
+                <div class="endpoint">
+                    <div class="endpoint-header">
+                        <span class="method get">GET</span>
+                        <span class="endpoint-path">/v1/creator/stats</span>
+                    </div>
+                    <div class="endpoint-description">Get creator dashboard statistics</div>
+                    <div class="endpoint-details">
+                        <strong>Headers:</strong> Authorization: Bearer {jwt_token}<br>
+                        <strong>Response:</strong> clicks_today, conversions_today, pending_payout, period
+                        <div class="auth-required">🔐 JWT Authentication Required</div>
+                    </div>
+                </div>
+
+                <div class="endpoint">
+                    <div class="endpoint-header">
+                        <span class="method get">GET</span>
+                        <span class="endpoint-path">/v1/creator/campaigns</span>
+                    </div>
+                    <div class="endpoint-description">List all campaigns for the authenticated creator</div>
+                    <div class="endpoint-details">
+                        <strong>Headers:</strong> Authorization: Bearer {jwt_token}<br>
+                        <strong>Response:</strong> Array of campaigns with performance metrics
+                        <div class="auth-required">🔐 JWT Authentication Required</div>
+                    </div>
+                </div>
+
+                <div class="endpoint">
+                    <div class="endpoint-header">
+                        <span class="method get">GET</span>
+                        <span class="endpoint-path">/v1/creator/payouts</span>
+                    </div>
+                    <div class="endpoint-description">Get payout history for the creator</div>
+                    <div class="endpoint-details">
+                        <strong>Headers:</strong> Authorization: Bearer {jwt_token}<br>
+                        <strong>Query:</strong> status (optional)<br>
+                        <strong>Response:</strong> Array of payout entries
+                        <div class="auth-required">🔐 JWT Authentication Required</div>
+                    </div>
+                </div>
+
+                <div class="endpoint">
+                    <div class="endpoint-header">
+                        <span class="method get">GET</span>
+                        <span class="endpoint-path">/v1/creator/profile</span>
+                    </div>
+                    <div class="endpoint-description">Get creator profile information</div>
+                    <div class="endpoint-details">
+                        <strong>Headers:</strong> Authorization: Bearer {jwt_token}<br>
+                        <strong>Response:</strong> Creator profile data
+                        <div class="auth-required">🔐 JWT Authentication Required</div>
+                    </div>
+                </div>
+
+                <div class="endpoint">
+                    <div class="endpoint-header">
+                        <span class="method put">PUT</span>
+                        <span class="endpoint-path">/v1/creator/profile</span>
+                    </div>
+                    <div class="endpoint-description">Update creator profile information</div>
+                    <div class="endpoint-details">
+                        <strong>Headers:</strong> Authorization: Bearer {jwt_token}<br>
+                        <strong>Body:</strong> display_name, phone, email, theme_hex (all optional)
+                        <div class="auth-required">🔐 JWT Authentication Required</div>
+                    </div>
+                </div>
+            </div>
+
+            <!-- Admin APIs -->
+            <div class="api-section" id="admin-apis">
+                <div class="section-header">
+                    <h2>🏢 Admin APIs</h2>
+                    <p>Internal administrative APIs for managing tenants, campaigns, and platform operations</p>
+                </div>
+
+                <div class="endpoint">
+                    <div class="endpoint-header">
+                        <span class="method get">GET</span>
+                        <span class="endpoint-path">/v1/offers</span>
+                    </div>
+                    <div class="endpoint-description">List all available offers/campaigns</div>
+                    <div class="endpoint-details">
+                        <strong>Query:</strong> tenant_id, category, limit (optional)<br>
+                        <strong>Response:</strong> Array of offers with brand, category, commission details
+                    </div>
+                </div>
+
+                <div class="endpoint">
+                    <div class="endpoint-header">
+                        <span class="method post">POST</span>
+                        <span class="endpoint-path">/v1/campaigns</span>
+                    </div>
+                    <div class="endpoint-description">Create a new campaign for a creator</div>
+                    <div class="endpoint-details">
+                        <strong>Body:</strong> tenant_id, name, share_pct (optional)<br>
+                        <strong>Response:</strong> campaign_id, tenant_id, name, share_pct, status, created_at
+                    </div>
+                </div>
+
+                <div class="endpoint">
+                    <div class="endpoint-header">
+                        <span class="method post">POST</span>
+                        <span class="endpoint-path">/v1/links</span>
+                    </div>
+                    <div class="endpoint-description">Generate a smart link for a campaign and offer</div>
+                    <div class="endpoint-details">
+                        <strong>Body:</strong> campaign_id, offer_id<br>
+                        <strong>Response:</strong> link_id, campaign_id, offer_id, slug, smart_link
+                    </div>
+                </div>
+
+                <div class="endpoint">
+                    <div class="endpoint-header">
+                        <span class="method get">GET</span>
+                        <span class="endpoint-path">/v1/campaigns</span>
+                    </div>
+                    <div class="endpoint-description">List all campaigns (admin view)</div>
+                    <div class="endpoint-details">
+                        <strong>Query:</strong> tenant_id (optional)<br>
+                        <strong>Response:</strong> Array of all campaigns
+                    </div>
+                </div>
+
+                <div class="endpoint">
+                    <div class="endpoint-header">
+                        <span class="method get">GET</span>
+                        <span class="endpoint-path">/v1/links</span>
+                    </div>
+                    <div class="endpoint-description">List all smart links (admin view)</div>
+                    <div class="endpoint-details">
+                        <strong>Query:</strong> tenant_id (optional)<br>
+                        <strong>Response:</strong> Array of all smart links
+                    </div>
+                </div>
+
+                <div class="endpoint">
+                    <div class="endpoint-header">
+                        <span class="method get">GET</span>
+                        <span class="endpoint-path">/v1/tenants</span>
+                    </div>
+                    <div class="endpoint-description">List all tenants (creators)</div>
+                    <div class="endpoint-details">
+                        <strong>Response:</strong> Array of all tenants with their details
+                    </div>
+                </div>
+
+                <div class="endpoint">
+                    <div class="endpoint-header">
+                        <span class="method get">GET</span>
+                        <span class="endpoint-path">/v1/tenants/{tenant_id}</span>
+                    </div>
+                    <div class="endpoint-description">Get specific tenant details</div>
+                    <div class="endpoint-details">
+                        <strong>Path:</strong> tenant_id<br>
+                        <strong>Response:</strong> Detailed tenant information
+                    </div>
+                </div>
+
+                <div class="endpoint">
+                    <div class="endpoint-header">
+                        <span class="method get">GET</span>
+                        <span class="endpoint-path">/v1/ledger</span>
+                    </div>
+                    <div class="endpoint-description">View all ledger entries (transactions)</div>
+                    <div class="endpoint-details">
+                        <strong>Response:</strong> Array of all ledger entries with conversion details
+                    </div>
+                </div>
+            </div>
+
+            <!-- Trackier Integration -->
+            <div class="api-section" id="trackier-integration">
+                <div class="section-header">
+                    <h2>🔗 Trackier Integration APIs</h2>
+                    <p>APIs for syncing data with Trackier's affiliate network platform</p>
+                </div>
+
+                <div class="endpoint">
+                    <div class="endpoint-header">
+                        <span class="method post">POST</span>
+                        <span class="endpoint-path">/v1/sync/advertisers</span>
+                    </div>
+                    <div class="endpoint-description">Sync advertisers (brands) from Trackier</div>
+                    <div class="endpoint-details">
+                        <strong>Response:</strong> Sync status with count of advertisers processed
+                    </div>
+                </div>
+
+                <div class="endpoint">
+                    <div class="endpoint-header">
+                        <span class="method post">POST</span>
+                        <span class="endpoint-path">/v1/sync/campaigns</span>
+                    </div>
+                    <div class="endpoint-description">Sync campaigns (offers) from Trackier</div>
+                    <div class="endpoint-details">
+                        <strong>Query:</strong> advertiser_id (optional)<br>
+                        <strong>Response:</strong> Sync status with count of campaigns processed
+                    </div>
+                </div>
+
+                <div class="endpoint">
+                    <div class="endpoint-header">
+                        <span class="method post">POST</span>
+                        <span class="endpoint-path">/v1/sync/offers</span>
+                    </div>
+                    <div class="endpoint-description">Sync offers from Trackier (legacy endpoint)</div>
+                    <div class="endpoint-details">
+                        <strong>Response:</strong> Sync status with offers processed, added, updated, deactivated
+                    </div>
+                </div>
+
+                <div class="endpoint">
+                    <div class="endpoint-header">
+                        <span class="method get">GET</span>
+                        <span class="endpoint-path">/v1/trackier/advertisers</span>
+                    </div>
+                    <div class="endpoint-description">Get raw advertisers data from Trackier</div>
+                    <div class="endpoint-details">
+                        <strong>Response:</strong> Raw advertiser data from Trackier API
+                    </div>
+                </div>
+
+                <div class="endpoint">
+                    <div class="endpoint-header">
+                        <span class="method get">GET</span>
+                        <span class="endpoint-path">/v1/trackier/campaigns</span>
+                    </div>
+                    <div class="endpoint-description">Get raw campaigns data from Trackier</div>
+                    <div class="endpoint-details">
+                        <strong>Query:</strong> advertiser_id, publisher_id (optional)<br>
+                        <strong>Response:</strong> Raw campaign data from Trackier API
+                    </div>
+                </div>
+
+                <div class="endpoint">
+                    <div class="endpoint-header">
+                        <span class="method get">GET</span>
+                        <span class="endpoint-path">/v1/trackier/publishers</span>
+                    </div>
+                    <div class="endpoint-description">Get raw publishers data from Trackier</div>
+                    <div class="endpoint-details">
+                        <strong>Response:</strong> Raw publisher data from Trackier API
+                    </div>
+                </div>
+            </div>
+
+            <!-- End-User APIs -->
+            <div class="api-section" id="end-user-apis">
+                <div class="section-header">
+                    <h2>🎯 End-User APIs</h2>
+                    <p>APIs for end-users to interact with smart links and earn rewards</p>
+                </div>
+
+                <div class="endpoint">
+                    <div class="endpoint-header">
+                        <span class="method get">GET</span>
+                        <span class="endpoint-path">/go/{slug}</span>
+                    </div>
+                    <div class="endpoint-description">Handle smart link redirect and tracking</div>
+                    <div class="endpoint-details">
+                        <strong>Path:</strong> slug (unique link identifier)<br>
+                        <strong>Response:</strong> HTML page with OTP verification form
+                    </div>
+                </div>
+
+                <div class="endpoint">
+                    <div class="endpoint-header">
+                        <span class="method post">POST</span>
+                        <span class="endpoint-path">/v1/auth/enduser/otp/request</span>
+                    </div>
+                    <div class="endpoint-description">Request OTP for end-user reward claiming</div>
+                    <div class="endpoint-details">
+                        <strong>Body:</strong> phone, link_id<br>
+                        <strong>Response:</strong> request_id for OTP verification
+                    </div>
+                </div>
+
+                <div class="endpoint">
+                    <div class="endpoint-header">
+                        <span class="method post">POST</span>
+                        <span class="endpoint-path">/v1/auth/enduser/otp/verify</span>
+                    </div>
+                    <div class="endpoint-description">Verify OTP and claim reward</div>
+                    <div class="endpoint-details">
+                        <strong>Body:</strong> request_id, code, link_id<br>
+                        <strong>Response:</strong> Reward claim status and voucher code
+                    </div>
+                </div>
+
+                <div class="endpoint">
+                    <div class="endpoint-header">
+                        <span class="method get">GET</span>
+                        <span class="endpoint-path">/v1/rewards/user</span>
+                    </div>
+                    <div class="endpoint-description">Get payout history for a specific user</div>
+                    <div class="endpoint-details">
+                        <strong>Query:</strong> user_id<br>
+                        <strong>Response:</strong> Array of payout entries for the user
+                    </div>
+                </div>
+            </div>
+
+            <!-- Authentication -->
+            <div class="api-section" id="authentication">
+                <div class="section-header">
+                    <h2>🔐 Authentication APIs</h2>
+                    <p>User authentication and OTP verification APIs</p>
+                </div>
+
+                <div class="endpoint">
+                    <div class="endpoint-header">
+                        <span class="method post">POST</span>
+                        <span class="endpoint-path">/v1/auth/otp/request</span>
+                    </div>
+                    <div class="endpoint-description">Request OTP for general authentication</div>
+                    <div class="endpoint-details">
+                        <strong>Body:</strong> phone<br>
+                        <strong>Response:</strong> request_id for OTP verification
+                    </div>
+                </div>
+
+                <div class="endpoint">
+                    <div class="endpoint-header">
+                        <span class="method post">POST</span>
+                        <span class="endpoint-path">/v1/auth/otp/verify</span>
+                    </div>
+                    <div class="endpoint-description">Verify OTP for general authentication</div>
+                    <div class="endpoint-details">
+                        <strong>Body:</strong> request_id, code<br>
+                        <strong>Response:</strong> Authentication status and user details
+                    </div>
+                </div>
+
+                <div class="endpoint">
+                    <div class="endpoint-header">
+                        <span class="method post">POST</span>
+                        <span class="endpoint-path">/v1/auth/creator/login</span>
+                    </div>
+                    <div class="endpoint-description">Request OTP for creator login</div>
+                    <div class="endpoint-details">
+                        <strong>Body:</strong> phone<br>
+                        <strong>Response:</strong> request_id for creator OTP verification
+                    </div>
+                </div>
+
+                <div class="endpoint">
+                    <div class="endpoint-header">
+                        <span class="method post">POST</span>
+                        <span class="endpoint-path">/v1/auth/creator/verify</span>
+                    </div>
+                    <div class="endpoint-description">Verify OTP for creator login</div>
+                    <div class="endpoint-details">
+                        <strong>Body:</strong> request_id, code<br>
+                        <strong>Response:</strong> JWT token for creator authentication
+                    </div>
+                </div>
+            </div>
+
+            <!-- Analytics -->
+            <div class="api-section" id="analytics">
+                <div class="section-header">
+                    <h2>📊 Analytics APIs</h2>
+                    <p>Performance metrics and reporting APIs</p>
+                </div>
+
+                <div class="endpoint">
+                    <div class="endpoint-header">
+                        <span class="method get">GET</span>
+                        <span class="endpoint-path">/v1/analytics/creator</span>
+                    </div>
+                    <div class="endpoint-description">Get analytics for a specific creator</div>
+                    <div class="endpoint-details">
+                        <strong>Query:</strong> tenant_id, period (default: 30d)<br>
+                        <strong>Response:</strong> clicks, conversions, earnings, shared, period
+                    </div>
+                </div>
+
+                <div class="endpoint">
+                    <div class="endpoint-header">
+                        <span class="method get">GET</span>
+                        <span class="endpoint-path">/v1/offers/stats</span>
+                    </div>
+                    <div class="endpoint-description">Get offer statistics and performance metrics</div>
+                    <div class="endpoint-details">
+                        <strong>Response:</strong> Offer performance statistics and metrics
+                    </div>
+                </div>
+            </div>
+
+            <!-- Events & Webhooks -->
+            <div class="api-section" id="events-webhooks">
+                <div class="section-header">
+                    <h2>🔄 Events & Webhooks APIs</h2>
+                    <p>Click tracking, conversion processing, and payout events</p>
+                </div>
+
+                <div class="endpoint">
+                    <div class="endpoint-header">
+                        <span class="method post">POST</span>
+                        <span class="endpoint-path">/v1/events/click</span>
+                    </div>
+                    <div class="endpoint-description">Track a click event on a smart link</div>
+                    <div class="endpoint-details">
+                        <strong>Body:</strong> link_id, user_id (optional)<br>
+                        <strong>Response:</strong> click_id, link_id, user_id, timestamp
+                    </div>
+                </div>
+
+                <div class="endpoint">
+                    <div class="endpoint-header">
+                        <span class="method post">POST</span>
+                        <span class="endpoint-path">/v1/events/conversion</span>
+                    </div>
+                    <div class="endpoint-description">Process a conversion webhook from advertiser</div>
+                    <div class="endpoint-details">
+                        <strong>Body:</strong> click_id, offer_id, sale_amount, order_id, status<br>
+                        <strong>Response:</strong> Conversion processing status
+                    </div>
+                </div>
+
+                <div class="endpoint">
+                    <div class="endpoint-header">
+                        <span class="method post">POST</span>
+                        <span class="endpoint-path">/v1/rewards/payout/run</span>
+                    </div>
+                    <div class="endpoint-description">Run payout processing for eligible users</div>
+                    <div class="endpoint-details">
+                        <strong>Response:</strong> Payout processing results and statistics
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+</body>
+</html> 

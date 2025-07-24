@@ -1,0 +1,107 @@
+# Hissaback Platform - Entity Relationship Diagram
+
+## Database Schema Visual Representation
+
+```
+┌─────────────────────────┐
+│        TENANT           │
+├─────────────────────────┤
+│ tenant_id (PK)          │
+│ name                    │
+│ logo_url                │
+│ trackier_pid (UNIQUE)   │
+│ custom_domain           │
+│ default_share_pct       │
+└─────────────────────────┘
+            │
+            │ 1:M
+            ▼
+┌─────────────────────────┐    ┌─────────────────────────┐
+│       CAMPAIGN          │    │         OFFER           │
+├─────────────────────────┤    ├─────────────────────────┤
+│ campaign_id (PK)        │    │ offer_id (PK)           │
+│ tenant_id (FK)          │    │ brand                   │
+│ name                    │    │ sku                     │
+│ share_pct               │    │ category                │
+│ status                  │    │ base_commission_pct     │
+└─────────────────────────┘    │ cool_off_days           │
+            │                  └─────────────────────────┘
+            │ 1:M                          │
+            ▼                              │
+┌─────────────────────────┐                │
+│         LINK            │ ◄──────────────┘ M:1
+├─────────────────────────┤
+│ link_id (PK)            │
+│ campaign_id (FK)        │
+│ offer_id (FK)           │
+│ slug                    │
+└─────────────────────────┘
+            │
+            │ 1:M
+            ▼
+┌─────────────────────────┐    ┌─────────────────────────┐
+│         CLICK           │    │         USER            │
+├─────────────────────────┤    ├─────────────────────────┤
+│ click_id (PK)           │    │ user_id (PK)            │
+│ link_id (FK)            │    │ phone                   │
+│ user_id (FK) [NULL]     │ ◄──┤ email                   │ M:1
+│ ts_click                │    │ kyc_hash                │
+└─────────────────────────┘    └─────────────────────────┘
+            │                              │
+            │ 1:M                          │ 1:M
+            ▼                              ▼
+┌─────────────────────────┐    ┌─────────────────────────┐
+│      CONVERSION         │    │        PAYOUT           │
+├─────────────────────────┤    ├─────────────────────────┤
+│ conv_id (PK)            │    │ payout_id (PK)          │
+│ click_id (FK)           │    │ user_id (FK)            │
+│ order_value             │    │ amount                  │
+│ ts_conv                 │    │ method                  │
+│ net_commission          │    │ voucher_code            │
+└─────────────────────────┘    │ ts_paid                 │
+            │                  └─────────────────────────┘
+            │ 1:1
+            ▼
+┌─────────────────────────┐
+│        LEDGER           │
+├─────────────────────────┤
+│ led_id (PK)             │
+│ conv_id (FK)            │
+│ user_pct                │
+│ user_amount             │
+│ creator_amount          │
+│ status                  │
+└─────────────────────────┘
+
+┌─────────────────────────┐
+│        WIDGET           │
+├─────────────────────────┤
+│ widget_id (PK)          │
+│ campaign_id (FK)        │
+│ config_json             │
+└─────────────────────────┘
+            ▲
+            │ M:1
+            │
+      [CAMPAIGN]
+```
+
+## Relationships Summary
+
+- **TENANT** → **CAMPAIGN** (1:M): One tenant can have many campaigns
+- **CAMPAIGN** → **LINK** (1:M): One campaign can have many links  
+- **CAMPAIGN** → **WIDGET** (1:M): One campaign can have many widgets
+- **OFFER** → **LINK** (M:1): Many links can reference one offer
+- **LINK** → **CLICK** (1:M): One link can have many clicks
+- **USER** → **CLICK** (1:M): One user can have many clicks (optional relationship)
+- **USER** → **PAYOUT** (1:M): One user can have many payouts
+- **CLICK** → **CONVERSION** (1:M): One click can have many conversions
+- **CONVERSION** → **LEDGER** (1:1): Each conversion has exactly one ledger entry
+
+## Key Constraints
+
+- **tenant_id**: Multi-tenant isolation key
+- **trackier_pid**: Unique identifier for Trackier integration
+- **phone**: Unique user identifier for OTP verification
+- **slug**: URL-safe unique identifier for link routing
+- **cool_off_days**: Per-offer waiting period before payout eligibility 

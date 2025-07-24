@@ -1,0 +1,11 @@
+[
+  {
+    "tenant_id": "tnt_101",
+    "name": "Mo's Bargain Bin",
+    "phone": "+919820692913",
+    "email": "mohsin@example.com",
+    "pid": "9999",
+    "default_share_pct": 40,
+    "custom_domain": "mohsin.com"
+  }
+]

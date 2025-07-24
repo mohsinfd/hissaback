@@ -1,0 +1,52 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Hissaback Creator Login v2 (Demo)</title>
+  <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;600&display=swap" rel="stylesheet">
+  <link href="https://cdn.jsdelivr.net/npm/tailwindcss@2.2.19/dist/tailwind.min.css" rel="stylesheet">
+  <style>
+    body { font-family: 'Inter', sans-serif; }
+  </style>
+</head>
+<body class="bg-gray-50 min-h-screen flex items-center justify-center">
+  <div class="bg-white rounded-lg shadow p-8 w-full max-w-md">
+    <div class="mb-6 text-center">
+      <span class="text-3xl font-bold text-blue-600">Hissaback</span>
+      <div class="text-xs text-gray-400">Creator Login v2 (Demo)</div>
+    </div>
+    <div id="step-phone">
+      <div class="mb-2 text-gray-700">Enter your phone number:</div>
+      <input id="input-phone" type="text" placeholder="Phone number" class="border rounded px-3 py-2 w-full mb-2">
+      <button id="btn-send-otp" class="bg-blue-600 text-white px-4 py-2 rounded hover:bg-blue-700 w-full">Send OTP</button>
+    </div>
+    <div id="step-otp" class="hidden">
+      <div class="mb-2 text-gray-700">Enter OTP (Demo: 1234):</div>
+      <input id="input-otp" type="text" placeholder="OTP" class="border rounded px-3 py-2 w-full mb-2">
+      <button id="btn-verify-otp" class="bg-green-600 text-white px-4 py-2 rounded hover:bg-green-700 w-full">Verify OTP</button>
+    </div>
+    <div id="login-success" class="hidden text-green-700 text-center mt-4">Login successful! (Demo)</div>
+  </div>
+  <script>
+    document.getElementById('btn-send-otp').onclick = function() {
+      var phone = document.getElementById('input-phone').value;
+      if(phone.length < 8) {
+        alert('Please enter a valid phone number.');
+        return;
+      }
+      document.getElementById('step-phone').classList.add('hidden');
+      document.getElementById('step-otp').classList.remove('hidden');
+    };
+    document.getElementById('btn-verify-otp').onclick = function() {
+      var otp = document.getElementById('input-otp').value;
+      if(otp !== '1234') {
+        alert('Demo: Enter 1234 as OTP.');
+        return;
+      }
+      document.getElementById('step-otp').classList.add('hidden');
+      document.getElementById('login-success').classList.remove('hidden');
+    };
+  </script>
+</body>
+</html> 

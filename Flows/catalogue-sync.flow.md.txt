@@ -1,0 +1,35 @@
+# Flow: Catalogue Sync (Trackier Integration)
+
+1. **Trigger** – Nightly cron job (02:00 IST) OR manual API call `/v1/sync/offers`.
+
+2. **Trackier API Call**:
+   * GET `https://api.trackier.com/v1/advertisers/offers?api_key=XXXX`
+   * Headers: `Authorization: Bearer {api_key}`
+   * Parse response fields: `id`, `category`, `preview_url`, `payout`
+
+3. **Data Processing**:
+   * Map Trackier fields to our schema:
+     - `id` → `offer_id`
+     - `advertiser.name` → `brand`
+     - `category` → `category`
+     - `payout.amount` → `base_commission_pct`
+   * Apply business rules (filter inactive, validate commission %)
+
+4. **Database Sync**:
+   * Upsert into `offers` table (INSERT ON CONFLICT UPDATE)
+   * Mark offers not in API response as `status='inactive'`
+   * Log sync statistics (added, updated, deactivated)
+
+5. **Cache Refresh**:
+   * Clear Redis cache for `/v1/offers` endpoint
+   * Preload top categories and brands for fast API response
+
+6. **Monitoring & Alerts**:
+   * Emit metrics: `trackier.sync.offers_count`, `trackier.sync.duration`
+   * Slack notification if sync fails or finds <10 offers
+   * Log detailed results for audit trail
+
+**Success Criteria**:
+* Sync completes in <5 minutes for 1000+ offers
+* Zero downtime for offers API during sync
+* Automatic retry on API failures (3 attempts) 

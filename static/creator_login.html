@@ -1,0 +1,493 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Creator Login - Hissaback</title>
+    <style>
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+
+        body {
+            font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, sans-serif;
+            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+            min-height: 100vh;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            padding: 20px;
+        }
+
+        .login-container {
+            background: white;
+            border-radius: 16px;
+            box-shadow: 0 20px 40px rgba(0, 0, 0, 0.1);
+            padding: 40px;
+            width: 100%;
+            max-width: 400px;
+        }
+
+        .logo {
+            text-align: center;
+            margin-bottom: 32px;
+        }
+
+        .logo h1 {
+            font-size: 28px;
+            font-weight: bold;
+            color: #3b82f6;
+            margin-bottom: 8px;
+        }
+
+        .logo p {
+            color: #64748b;
+            font-size: 14px;
+        }
+
+        .step {
+            display: none;
+        }
+
+        .step.active {
+            display: block;
+        }
+
+        .step-title {
+            font-size: 20px;
+            font-weight: 600;
+            margin-bottom: 8px;
+            color: #1e293b;
+        }
+
+        .step-subtitle {
+            color: #64748b;
+            margin-bottom: 24px;
+            font-size: 14px;
+        }
+
+        .form-group {
+            margin-bottom: 20px;
+        }
+
+        .form-label {
+            display: block;
+            font-weight: 500;
+            margin-bottom: 8px;
+            color: #374151;
+            font-size: 14px;
+        }
+
+        .form-input {
+            width: 100%;
+            padding: 12px 16px;
+            border: 2px solid #e2e8f0;
+            border-radius: 8px;
+            font-size: 16px;
+            transition: border-color 0.2s;
+        }
+
+        .form-input:focus {
+            outline: none;
+            border-color: #3b82f6;
+        }
+
+        .otp-inputs {
+            display: flex;
+            gap: 8px;
+            justify-content: center;
+            margin-bottom: 20px;
+        }
+
+        .otp-input {
+            width: 50px;
+            height: 50px;
+            text-align: center;
+            font-size: 20px;
+            font-weight: bold;
+            border: 2px solid #e2e8f0;
+            border-radius: 8px;
+            transition: border-color 0.2s;
+        }
+
+        .otp-input:focus {
+            outline: none;
+            border-color: #3b82f6;
+        }
+
+        .btn {
+            width: 100%;
+            padding: 12px 16px;
+            border: none;
+            border-radius: 8px;
+            font-size: 16px;
+            font-weight: 500;
+            cursor: pointer;
+            transition: all 0.2s;
+        }
+
+        .btn-primary {
+            background: #3b82f6;
+            color: white;
+        }
+
+        .btn-primary:hover {
+            background: #2563eb;
+        }
+
+        .btn-secondary {
+            background: #f1f5f9;
+            color: #475569;
+        }
+
+        .btn-secondary:hover {
+            background: #e2e8f0;
+        }
+
+        .btn:disabled {
+            opacity: 0.6;
+            cursor: not-allowed;
+        }
+
+        .resend-link {
+            text-align: center;
+            margin-top: 16px;
+        }
+
+        .resend-link a {
+            color: #3b82f6;
+            text-decoration: none;
+            font-size: 14px;
+        }
+
+        .resend-link a:hover {
+            text-decoration: underline;
+        }
+
+        .error-message {
+            background: #fef2f2;
+            border: 1px solid #fecaca;
+            color: #dc2626;
+            padding: 12px;
+            border-radius: 8px;
+            margin-bottom: 20px;
+            font-size: 14px;
+        }
+
+        .success-message {
+            background: #f0fdf4;
+            border: 1px solid #bbf7d0;
+            color: #16a34a;
+            padding: 12px;
+            border-radius: 8px;
+            margin-bottom: 20px;
+            font-size: 14px;
+        }
+
+        .loading {
+            display: inline-block;
+            width: 20px;
+            height: 20px;
+            border: 2px solid #f3f3f3;
+            border-top: 2px solid #3b82f6;
+            border-radius: 50%;
+            animation: spin 1s linear infinite;
+            margin-right: 8px;
+        }
+
+        @keyframes spin {
+            0% { transform: rotate(0deg); }
+            100% { transform: rotate(360deg); }
+        }
+
+        .signup-link {
+            text-align: center;
+            margin-top: 24px;
+            padding-top: 24px;
+            border-top: 1px solid #e2e8f0;
+        }
+
+        .signup-link a {
+            color: #3b82f6;
+            text-decoration: none;
+            font-weight: 500;
+        }
+
+        .signup-link a:hover {
+            text-decoration: underline;
+        }
+
+        @media (max-width: 480px) {
+            .login-container {
+                padding: 24px;
+            }
+
+            .otp-input {
+                width: 45px;
+                height: 45px;
+                font-size: 18px;
+            }
+        }
+    </style>
+</head>
+<body>
+    <div class="login-container">
+        <div class="logo">
+                                <h1>Hissaback</h1>
+            <p>Creator Dashboard</p>
+        </div>
+
+        <!-- Step 1: Phone Number -->
+        <div id="step1" class="step active">
+            <div class="step-title">Welcome back!</div>
+            <div class="step-subtitle">Enter your phone number to continue</div>
+
+            <div id="error1" class="error-message" style="display: none;"></div>
+
+            <form id="phoneForm">
+                <div class="form-group">
+                    <label class="form-label">Phone Number</label>
+                    <input 
+                        type="tel" 
+                        class="form-input" 
+                        id="phone" 
+                        placeholder="+91 98765 43210"
+                        required
+                    >
+                </div>
+                <button type="submit" class="btn btn-primary" id="sendOtpBtn">
+                    <span id="sendOtpText">Send OTP</span>
+                    <span id="sendOtpLoading" class="loading" style="display: none;"></span>
+                </button>
+            </form>
+
+            <div class="signup-link">
+                Don't have an account? <a href="/signup">Sign up here</a>
+            </div>
+        </div>
+
+        <!-- Step 2: OTP Verification -->
+        <div id="step2" class="step">
+            <div class="step-title">Verify your phone</div>
+            <div class="step-subtitle">We've sent a 6-digit code to <span id="phoneDisplay"></span></div>
+
+            <div id="error2" class="error-message" style="display: none;"></div>
+            <div id="success2" class="success-message" style="display: none;"></div>
+
+            <form id="otpForm">
+                <div class="otp-inputs">
+                    <input type="text" class="otp-input" maxlength="1" data-index="0">
+                    <input type="text" class="otp-input" maxlength="1" data-index="1">
+                    <input type="text" class="otp-input" maxlength="1" data-index="2">
+                    <input type="text" class="otp-input" maxlength="1" data-index="3">
+                    <input type="text" class="otp-input" maxlength="1" data-index="4">
+                    <input type="text" class="otp-input" maxlength="1" data-index="5">
+                </div>
+                <button type="submit" class="btn btn-primary" id="verifyOtpBtn">
+                    <span id="verifyOtpText">Verify OTP</span>
+                    <span id="verifyOtpLoading" class="loading" style="display: none;"></span>
+                </button>
+            </form>
+
+            <div class="resend-link">
+                <a href="#" id="resendOtp">Resend OTP</a>
+            </div>
+
+            <button class="btn btn-secondary" onclick="goBack()" style="margin-top: 16px;">
+                ← Back to phone number
+            </button>
+        </div>
+    </div>
+
+    <script>
+        let currentStep = 1;
+        let phoneNumber = '';
+        let requestId = '';
+
+        // Initialize
+        document.addEventListener('DOMContentLoaded', function() {
+            setupOtpInputs();
+            setupForms();
+        });
+
+        function setupOtpInputs() {
+            const otpInputs = document.querySelectorAll('.otp-input');
+            
+            otpInputs.forEach((input, index) => {
+                input.addEventListener('input', function(e) {
+                    const value = e.target.value;
+                    
+                    // Auto-focus next input
+                    if (value && index < otpInputs.length - 1) {
+                        otpInputs[index + 1].focus();
+                    }
+                });
+
+                input.addEventListener('keydown', function(e) {
+                    // Handle backspace
+                    if (e.key === 'Backspace' && !e.target.value && index > 0) {
+                        otpInputs[index - 1].focus();
+                    }
+                });
+            });
+        }
+
+        function setupForms() {
+            // Phone form
+            document.getElementById('phoneForm').addEventListener('submit', async function(e) {
+                e.preventDefault();
+                await sendOtp();
+            });
+
+            // OTP form
+            document.getElementById('otpForm').addEventListener('submit', async function(e) {
+                e.preventDefault();
+                await verifyOtp();
+            });
+
+            // Resend OTP
+            document.getElementById('resendOtp').addEventListener('click', async function(e) {
+                e.preventDefault();
+                await sendOtp();
+            });
+        }
+
+        async function sendOtp() {
+            const phone = document.getElementById('phone').value.trim();
+            
+            if (!phone) {
+                showError(1, 'Please enter your phone number');
+                return;
+            }
+
+            // Show loading
+            setLoading('sendOtp', true);
+            hideError(1);
+
+            try {
+                const response = await fetch('/v1/auth/creator/login', {
+                    method: 'POST',
+                    headers: {
+                        'Content-Type': 'application/json'
+                    },
+                    body: JSON.stringify({ phone })
+                });
+
+                const data = await response.json();
+
+                if (response.ok) {
+                    phoneNumber = phone;
+                    requestId = data.request_id;
+                    document.getElementById('phoneDisplay').textContent = phone;
+                    showStep(2);
+                } else {
+                    showError(1, data.detail || 'Failed to send OTP');
+                }
+            } catch (error) {
+                console.error('Error sending OTP:', error);
+                showError(1, 'Network error. Please try again.');
+            } finally {
+                setLoading('sendOtp', false);
+            }
+        }
+
+        async function verifyOtp() {
+            const otpInputs = document.querySelectorAll('.otp-input');
+            const otp = Array.from(otpInputs).map(input => input.value).join('');
+
+            if (otp.length !== 6) {
+                showError(2, 'Please enter the complete 6-digit OTP');
+                return;
+            }
+
+            // Show loading
+            setLoading('verifyOtp', true);
+            hideError(2);
+
+            try {
+                const response = await fetch('/v1/auth/creator/verify', {
+                    method: 'POST',
+                    headers: {
+                        'Content-Type': 'application/json'
+                    },
+                    body: JSON.stringify({
+                        request_id: requestId,
+                        code: otp
+                    })
+                });
+
+                const data = await response.json();
+
+                if (response.ok) {
+                    // Store token and redirect
+                    localStorage.setItem('creator_token', data.jwt);
+                    localStorage.setItem('creator_data', JSON.stringify(data));
+                    
+                    showSuccess(2, 'Login successful! Redirecting...');
+                    
+                    setTimeout(() => {
+                        window.location.href = '/creator_dashboard.html';
+                    }, 1000);
+                } else {
+                    showError(2, data.detail || 'Invalid OTP');
+                }
+            } catch (error) {
+                console.error('Error verifying OTP:', error);
+                showError(2, 'Network error. Please try again.');
+            } finally {
+                setLoading('verifyOtp', false);
+            }
+        }
+
+        function showStep(step) {
+            // Hide all steps
+            document.querySelectorAll('.step').forEach(s => s.classList.remove('active'));
+            
+            // Show current step
+            document.getElementById(`step${step}`).classList.add('active');
+            
+            currentStep = step;
+        }
+
+        function goBack() {
+            showStep(1);
+            // Clear OTP inputs
+            document.querySelectorAll('.otp-input').forEach(input => input.value = '');
+        }
+
+        function showError(step, message) {
+            const errorEl = document.getElementById(`error${step}`);
+            errorEl.textContent = message;
+            errorEl.style.display = 'block';
+        }
+
+        function hideError(step) {
+            document.getElementById(`error${step}`).style.display = 'none';
+        }
+
+        function showSuccess(step, message) {
+            const successEl = document.getElementById(`success${step}`);
+            successEl.textContent = message;
+            successEl.style.display = 'block';
+        }
+
+        function setLoading(type, loading) {
+            const btn = document.getElementById(`${type}Btn`);
+            const text = document.getElementById(`${type}Text`);
+            const loadingEl = document.getElementById(`${type}Loading`);
+
+            if (loading) {
+                btn.disabled = true;
+                text.style.display = 'none';
+                loadingEl.style.display = 'inline-block';
+            } else {
+                btn.disabled = false;
+                text.style.display = 'inline';
+                loadingEl.style.display = 'none';
+            }
+        }
+    </script>
+</body>
+</html> 

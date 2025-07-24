@@ -1,0 +1,70 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Hissaback API Docs v2 (Demo)</title>
+  <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;600&display=swap" rel="stylesheet">
+  <link href="https://cdn.jsdelivr.net/npm/tailwindcss@2.2.19/dist/tailwind.min.css" rel="stylesheet">
+  <style>
+    body { font-family: 'Inter', sans-serif; }
+    pre { background: #f3f4f6; padding: 1em; border-radius: 6px; overflow-x: auto; }
+  </style>
+</head>
+<body class="bg-gray-50 min-h-screen">
+  <div class="max-w-4xl mx-auto mt-10 bg-white rounded-lg shadow p-8">
+    <header class="mb-8">
+      <div class="text-3xl font-bold text-blue-600 mb-1">Hissaback API Docs v2</div>
+      <div class="text-xs text-gray-400">Demo - Modern API documentation for business users & developers</div>
+    </header>
+    <section class="mb-8">
+      <h2 class="text-xl font-semibold mb-2">API Categories</h2>
+      <ul class="list-disc pl-6 text-gray-700">
+        <li>Authentication APIs</li>
+        <li>Creator APIs</li>
+        <li>Admin APIs</li>
+        <li>Trackier Integration APIs</li>
+        <li>Analytics & Reporting APIs</li>
+        <li>End-User APIs</li>
+        <li>Events & Webhooks</li>
+      </ul>
+    </section>
+    <section class="mb-8">
+      <h2 class="text-xl font-semibold mb-2">Sample: Get Offers</h2>
+      <pre><code>GET /v1/offers
+Host: hissaback.app
+</code></pre>
+      <div class="text-gray-600 mb-2">Returns a list of all available offers.</div>
+      <pre><code>[
+  {
+    "offer_id": "camp_1234",
+    "brand": "Flipkart",
+    "category": "Electronics",
+    "base_commission_pct": 10.0,
+    "status": "active"
+  },
+  ...
+]</code></pre>
+    </section>
+    <section class="mb-8">
+      <h2 class="text-xl font-semibold mb-2">Sample: Create Campaign</h2>
+      <pre><code>POST /v1/campaigns
+Content-Type: application/json
+
+{
+  "tenant_id": "tnt_101",
+  "name": "My Campaign",
+  "offer_id": "camp_1234",
+  "share_pct": 50.0
+}</code></pre>
+    </section>
+    <section class="mb-8">
+      <h2 class="text-xl font-semibold mb-2">Swagger UI</h2>
+      <a href="/docs" class="text-blue-600 underline">Open Swagger UI</a>
+    </section>
+    <footer class="mt-8 text-center text-xs text-gray-400">
+      &copy; 2024 Hissaback API Docs v2 | Demo only
+    </footer>
+  </div>
+</body>
+</html> 

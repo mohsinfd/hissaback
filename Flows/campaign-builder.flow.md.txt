@@ -1,0 +1,13 @@
+# Flow: Campaign Builder
+
+1. **Trigger** – “New Campaign” inside dashboard.  
+2. **Choose Offers**  
+   * Search box (brand/SKU) -> hits `/offers?search=`  
+   * Multi‑select adds to ‘selected list’.  
+3. **Set Share %** – Default pre‑filled, override allowed per offer.  
+4. **Generate Link / Widget**  
+   * Option A “Smart Link” – returns URL w/ `offer_id`, `pid`, `cid`.  
+   * Option B “Embed Widget” – returns `<script>` snippet.  
+5. **Preview Panel** – Renders hosted landing or widget sandbox.  
+6. **Save** – Persist `campaign_id`, emit `campaign.created` event.  
+7. **Output** – Copy buttons + FAQ link (“How is cashback paid?”).
