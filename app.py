@@ -99,6 +99,11 @@ app.add_middleware(
 # Mount static files
 app.mount("/static", StaticFiles(directory="static"), name="static")
 
+# Vercel compatibility - export the app for serverless deployment
+if __name__ == "__main__":
+    import uvicorn
+    uvicorn.run(app, host="0.0.0.0", port=8001)
+
 # JWT Dependency for Creator Authentication
 async def get_creator_tenant_id(authorization: str = Header(...)) -> str:
     """
