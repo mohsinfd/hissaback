@@ -179,27 +179,138 @@
           </div>
         </div>
 
-        <!-- Profile Edit -->
+        <!-- Widget Generation -->
         <div class="bg-white rounded-lg shadow p-6 mb-6">
-          <h3 class="text-lg font-semibold mb-4">Edit Profile</h3>
-          <form id="profile-form" class="space-y-4">
-            <div>
-              <label class="block mb-1 font-medium">Display Name</label>
-              <input type="text" id="profile-name" class="border rounded px-3 py-2 w-full">
+          <h3 class="text-lg font-semibold mb-4">🎨 Generate Widgets</h3>
+          
+          <!-- Category Widget -->
+          <div class="mb-6">
+            <h4 class="font-medium text-gray-900 mb-3">📱 Category Widget</h4>
+            <div class="space-y-3">
+              <div>
+                <label class="block mb-1 font-medium">Select Category</label>
+                <select id="widget-category" class="border rounded px-3 py-2 w-full">
+                  <option value="">Choose category...</option>
+                  <option value="Electronics">📱 Electronics</option>
+                  <option value="Fashion">👕 Fashion</option>
+                  <option value="Home">🏠 Home</option>
+                  <option value="Food">🍕 Food</option>
+                  <option value="Gaming">🎮 Gaming</option>
+                  <option value="Beauty">💄 Beauty</option>
+                  <option value="Sports">⚽ Sports</option>
+                  <option value="Books">📚 Books</option>
+                </select>
+              </div>
+              <button onclick="generateCategoryWidget()" class="bg-purple-600 text-white px-4 py-2 rounded hover:bg-purple-700">Generate Category Widget</button>
             </div>
-            <div>
-              <label class="block mb-1 font-medium">Email</label>
-              <input type="email" id="profile-email" class="border rounded px-3 py-2 w-full">
+          </div>
+
+          <!-- Offer Carousel Widget -->
+          <div class="mb-6">
+            <h4 class="font-medium text-gray-900 mb-3">🎠 Offer Carousel Widget</h4>
+            <div class="space-y-3">
+              <div>
+                <label class="block mb-1 font-medium">Select Offers (Multiple)</label>
+                <div id="offer-checkboxes" class="grid grid-cols-2 gap-2 max-h-32 overflow-y-auto border rounded p-2">
+                  <!-- Will be populated dynamically -->
+                </div>
+              </div>
+              <button onclick="generateOfferCarousel()" class="bg-indigo-600 text-white px-4 py-2 rounded hover:bg-indigo-700">Generate Offer Carousel</button>
             </div>
-            <div>
-              <label class="block mb-1 font-medium">Phone</label>
-              <input type="text" id="profile-phone" class="border rounded px-3 py-2 w-full">
+          </div>
+
+          <!-- Widget Preview -->
+          <div id="widget-preview" class="mt-6 p-4 bg-gray-50 rounded hidden">
+            <h4 class="font-medium mb-3">Widget Preview:</h4>
+            <div id="widget-content" class="bg-white p-4 rounded border"></div>
+            <div class="mt-3">
+              <button onclick="copyWidgetCode()" class="bg-gray-600 text-white px-3 py-1 rounded text-sm hover:bg-gray-700">Copy Embed Code</button>
             </div>
-            <button type="submit" class="bg-yellow-600 text-white px-4 py-2 rounded hover:bg-yellow-700">
-              <span id="profile-btn-text">Update Profile</span>
-            </button>
-            <span id="profile-msg" class="ml-4"></span>
-          </form>
+          </div>
+        </div>
+
+        <!-- Creator Setup & Customization -->
+        <div class="bg-white rounded-lg shadow p-6 mb-6">
+          <h3 class="text-lg font-semibold mb-4">⚙️ Creator Setup & Customization</h3>
+          
+          <!-- Subdomain Setup -->
+          <div class="mb-6 p-4 bg-blue-50 rounded-lg">
+            <h4 class="font-medium text-blue-900 mb-2">🌐 Custom Subdomain</h4>
+            <div class="flex items-center space-x-2">
+              <input type="text" id="subdomain" placeholder="yourname" class="flex-1 border rounded px-3 py-2">
+              <span class="text-gray-600">.hissaback.app</span>
+              <button onclick="setupSubdomain()" class="bg-blue-600 text-white px-4 py-2 rounded hover:bg-blue-700">Setup</button>
+            </div>
+            <p class="text-sm text-gray-600 mt-2">Your page will be available at: <span id="subdomainPreview" class="font-mono text-blue-600">yourname.hissaback.app</span></p>
+          </div>
+
+          <!-- Featured Categories Setup -->
+          <div class="mb-6">
+            <h4 class="font-medium text-gray-900 mb-3">📱 Featured Categories</h4>
+            <div class="grid grid-cols-2 md:grid-cols-4 gap-3">
+              <label class="flex items-center space-x-2 cursor-pointer">
+                <input type="checkbox" value="Electronics" class="rounded border-gray-300 text-blue-600 focus:ring-blue-500">
+                <span>📱 Electronics</span>
+              </label>
+              <label class="flex items-center space-x-2 cursor-pointer">
+                <input type="checkbox" value="Fashion" class="rounded border-gray-300 text-blue-600 focus:ring-blue-500">
+                <span>👕 Fashion</span>
+              </label>
+              <label class="flex items-center space-x-2 cursor-pointer">
+                <input type="checkbox" value="Home" class="rounded border-gray-300 text-blue-600 focus:ring-blue-500">
+                <span>🏠 Home</span>
+              </label>
+              <label class="flex items-center space-x-2 cursor-pointer">
+                <input type="checkbox" value="Food" class="rounded border-gray-300 text-blue-600 focus:ring-blue-500">
+                <span>🍕 Food</span>
+              </label>
+              <label class="flex items-center space-x-2 cursor-pointer">
+                <input type="checkbox" value="Gaming" class="rounded border-gray-300 text-blue-600 focus:ring-blue-500">
+                <span>🎮 Gaming</span>
+              </label>
+              <label class="flex items-center space-x-2 cursor-pointer">
+                <input type="checkbox" value="Beauty" class="rounded border-gray-300 text-blue-600 focus:ring-blue-500">
+                <span>💄 Beauty</span>
+              </label>
+              <label class="flex items-center space-x-2 cursor-pointer">
+                <input type="checkbox" value="Sports" class="rounded border-gray-300 text-blue-600 focus:ring-blue-500">
+                <span>⚽ Sports</span>
+              </label>
+              <label class="flex items-center space-x-2 cursor-pointer">
+                <input type="checkbox" value="Books" class="rounded border-gray-300 text-blue-600 focus:ring-blue-500">
+                <span>📚 Books</span>
+              </label>
+            </div>
+          </div>
+
+          <!-- Profile Edit -->
+          <div class="mb-6">
+            <h4 class="font-medium text-gray-900 mb-3">📝 Profile Details</h4>
+            <form id="profile-form" class="space-y-4">
+              <div class="grid grid-cols-1 md:grid-cols-2 gap-4">
+                <div>
+                  <label class="block mb-1 font-medium">Display Name</label>
+                  <input type="text" id="profile-name" class="border rounded px-3 py-2 w-full">
+                </div>
+                <div>
+                  <label class="block mb-1 font-medium">Phone</label>
+                  <input type="text" id="profile-phone" class="border rounded px-3 py-2 w-full">
+                </div>
+                <div>
+                  <label class="block mb-1 font-medium">Email</label>
+                  <input type="email" id="profile-email" class="border rounded px-3 py-2 w-full">
+                </div>
+                <div>
+                  <label class="block mb-1 font-medium">Theme Color</label>
+                  <input type="color" id="theme-color" class="border rounded px-3 py-2 w-full h-10">
+                </div>
+              </div>
+              <button type="submit" class="bg-yellow-600 text-white px-4 py-2 rounded hover:bg-yellow-700">
+                <span id="profile-btn-text">Update Profile</span>
+              </button>
+              <span id="profile-msg" class="ml-4"></span>
+            </form>
+          </div>
         </div>
 
         <!-- Simulate Actions -->
@@ -385,6 +496,7 @@
         renderOffersTable(currentData.offers);
         populateOffersSelect('campaign-offer');
         populateOffersSelect('link-offer');
+        populateOfferCheckboxes(); // Populate widget offer checkboxes
       } catch (error) {
         console.error('Failed to load offers:', error);
         currentData.offers = [];
@@ -831,6 +943,106 @@
       } catch (error) {
         console.error('Failed to initialize dashboard:', error);
       }
+    }
+
+    // Subdomain setup function
+    async function setupSubdomain() {
+      const subdomain = document.getElementById('subdomain').value;
+      if (!subdomain) {
+        alert('Please enter a subdomain name');
+        return;
+      }
+      
+      // Update preview
+      document.getElementById('subdomainPreview').textContent = `${subdomain}.hissaback.app`;
+      
+      // In real implementation, this would call an API to setup the subdomain
+      showMessage('profile-msg', `Subdomain ${subdomain}.hissaback.app setup successfully!`);
+    }
+
+    // Update subdomain preview on input
+    document.getElementById('subdomain').addEventListener('input', function() {
+      const subdomain = this.value;
+      document.getElementById('subdomainPreview').textContent = subdomain ? `${subdomain}.hissaback.app` : 'yourname.hissaback.app';
+    });
+
+    // Widget generation functions
+    function generateCategoryWidget() {
+      const category = document.getElementById('widget-category').value;
+      if (!category) {
+        alert('Please select a category');
+        return;
+      }
+
+      const widgetContent = `
+        <div class="category-widget" style="border: 2px solid #e5e7eb; border-radius: 8px; padding: 16px; background: linear-gradient(135deg, #667eea 0%, #764ba2 100%); color: white;">
+          <h3 style="margin: 0 0 12px 0; font-size: 18px; font-weight: bold;">${category} Deals</h3>
+          <p style="margin: 0 0 16px 0; opacity: 0.9;">Best ${category.toLowerCase()} offers with cashback!</p>
+          <button style="background: white; color: #667eea; border: none; padding: 8px 16px; border-radius: 4px; font-weight: bold; cursor: pointer;">View Offers</button>
+        </div>
+      `;
+
+      document.getElementById('widget-content').innerHTML = widgetContent;
+      document.getElementById('widget-preview').classList.remove('hidden');
+    }
+
+    function generateOfferCarousel() {
+      const selectedOffers = Array.from(document.querySelectorAll('#offer-checkboxes input:checked')).map(cb => cb.value);
+      if (selectedOffers.length === 0) {
+        alert('Please select at least one offer');
+        return;
+      }
+
+      const offersHtml = selectedOffers.map(offer => `
+        <div style="flex: 0 0 200px; margin: 0 8px; padding: 12px; background: white; border-radius: 8px; box-shadow: 0 2px 4px rgba(0,0,0,0.1);">
+          <div style="font-weight: bold; margin-bottom: 4px;">${offer}</div>
+          <div style="font-size: 12px; color: #666;">Get cashback on purchases</div>
+          <button style="background: #667eea; color: white; border: none; padding: 4px 8px; border-radius: 4px; font-size: 12px; margin-top: 8px; cursor: pointer;">Shop Now</button>
+        </div>
+      `).join('');
+
+      const widgetContent = `
+        <div class="offer-carousel" style="border: 2px solid #e5e7eb; border-radius: 8px; padding: 16px; background: #f9fafb;">
+          <h3 style="margin: 0 0 12px 0; font-size: 16px; font-weight: bold; color: #374151;">Featured Offers</h3>
+          <div style="display: flex; overflow-x: auto; gap: 8px;">
+            ${offersHtml}
+          </div>
+        </div>
+      `;
+
+      document.getElementById('widget-content').innerHTML = widgetContent;
+      document.getElementById('widget-preview').classList.remove('hidden');
+    }
+
+    function copyWidgetCode() {
+      const widgetContent = document.getElementById('widget-content').innerHTML;
+      const embedCode = `<div class="hissaback-widget">${widgetContent}</div>`;
+      
+      navigator.clipboard.writeText(embedCode).then(() => {
+        alert('Widget embed code copied to clipboard!');
+      }).catch(() => {
+        // Fallback for older browsers
+        const textArea = document.createElement('textarea');
+        textArea.value = embedCode;
+        document.body.appendChild(textArea);
+        textArea.select();
+        document.execCommand('copy');
+        document.body.removeChild(textArea);
+        alert('Widget embed code copied to clipboard!');
+      });
+    }
+
+    // Populate offer checkboxes when offers are loaded
+    function populateOfferCheckboxes() {
+      const container = document.getElementById('offer-checkboxes');
+      if (!container || !currentData.offers) return;
+
+      container.innerHTML = currentData.offers.map(offer => `
+        <label class="flex items-center space-x-2 cursor-pointer">
+          <input type="checkbox" value="${offer.brand} - ${offer.category}" class="rounded border-gray-300 text-blue-600 focus:ring-blue-500">
+          <span class="text-sm">${offer.brand} - ${offer.category}</span>
+        </label>
+      `).join('');
     }
 
     // Start the dashboard
