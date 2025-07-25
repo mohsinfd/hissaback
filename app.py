@@ -1,7 +1,7 @@
-from fastapi import FastAPI, HTTPException, Depends, BackgroundTasks, Header
+from fastapi import FastAPI, HTTPException, Depends, BackgroundTasks, Header, Request
 from fastapi.middleware.cors import CORSMiddleware
 from fastapi.staticfiles import StaticFiles
-from fastapi.responses import FileResponse
+from fastapi.responses import FileResponse, RedirectResponse
 from pydantic import BaseModel, EmailStr
 from typing import Optional, List, Dict, Any
 import uuid
@@ -10,6 +10,11 @@ import os
 import requests
 from datetime import datetime, timedelta
 import asyncio
+
+# Import our new modules
+from models import *
+from payout_simulator import payout_simulator
+from edge_redirector import edge_redirector
 
 # Initialize FastAPI app
 app = FastAPI(
@@ -98,6 +103,151 @@ app.add_middleware(
 
 # Mount static files
 app.mount("/static", StaticFiles(directory="static"), name="static")
+
+# Demo-specific endpoints for enhanced functionality
+
+@app.get("/r/{click_id}", tags=["End-User APIs"])
+async def edge_redirect(click_id: str, request: Request):
+    """Edge redirector for smart links - simulates Cloudflare Worker"""
+    user_agent = request.headers.get("user-agent", "Demo Browser")
+    client_ip = request.client.host if request.client else "127.0.0.1"
+    
+    # For demo, we'll redirect to a demo page
+    demo_url = f"https://www.flipkart.com/?utm_source=hissaback&utm_medium=affiliate&click_id={click_id}"
+    
+    # Log the redirect
+    redirect_data = {
+        'click_id': click_id,
+        'user_agent': user_agent,
+        'ip_address': client_ip,
+        'redirect_url': demo_url,
+        'timestamp': datetime.utcnow().isoformat()
+    }
+    
+    return RedirectResponse(url=demo_url, status_code=302)
+
+@app.post("/v1/admin/run_payouts", tags=["Admin APIs"])
+async def run_payout_simulator():
+    """Run payout simulator for demo purposes"""
+    try:
+        # Simulate processing pending payouts
+        pending_amount = 1500.0  # Demo amount
+        
+        # Process GV payout
+        gv_result = payout_simulator.process_payout(500.0, 'gift_card')
+        
+        # Process UPI payout
+        upi_result = payout_simulator.process_payout(1000.0, 'upi')
+        
+        return {
+            "status": "completed",
+            "message": "Payout simulator completed successfully",
+            "processed": [
+                {
+                    "method": "gift_card",
+                    "amount": 500.0,
+                    "reference": gv_result['reference_id'],
+                    "receipt": gv_result['receipt']
+                },
+                {
+                    "method": "upi", 
+                    "amount": 1000.0,
+                    "reference": upi_result['reference_id'],
+                    "receipt": upi_result['receipt']
+                }
+            ],
+            "total_processed": 1500.0
+        }
+    except Exception as e:
+        raise HTTPException(status_code=500, detail=f"Payout simulation failed: {str(e)}")
+
+@app.get("/v1/admin/payout_history", tags=["Admin APIs"])
+async def get_payout_history():
+    """Get payout history for demo"""
+    return payout_simulator.get_payout_history()
+
+@app.get("/v1/admin/click_logs", tags=["Admin APIs"])
+async def get_click_logs():
+    """Get click logs for demo"""
+    return edge_redirector.get_click_logs()
+
+@app.get("/v1/admin/click/{click_id}", tags=["Admin APIs"])
+async def get_click_details(click_id: str):
+    """Get specific click details"""
+    click_data = edge_redirector.get_click_by_id(click_id)
+    if not click_data:
+        raise HTTPException(status_code=404, detail="Click not found")
+    return click_data
+
+@app.post("/v1/creator/offers/{offer_id}/reward_rate", tags=["Creator APIs"])
+async def update_offer_reward_rate(offer_id: str, reward_rate: float, tenant_id: str = Depends(get_creator_tenant_id)):
+    """Update reward rate for specific offer - demo feature"""
+    if reward_rate < 0 or reward_rate > 100:
+        raise HTTPException(status_code=400, detail="Reward rate must be between 0 and 100")
+    
+    # In real implementation, this would update the database
+    return {
+        "offer_id": offer_id,
+        "reward_rate": reward_rate,
+        "tenant_id": tenant_id,
+        "updated_at": datetime.utcnow().isoformat(),
+        "message": "Reward rate updated successfully"
+    }
+
+@app.get("/v1/creator/ledger/export", tags=["Creator APIs"])
+async def export_ledger_csv(tenant_id: str = Depends(get_creator_tenant_id)):
+    """Export ledger as CSV for demo"""
+    # Generate demo CSV data
+    csv_data = f"""Date,Type,Description,Amount,Balance
+{datetime.utcnow().strftime('%Y-%m-%d')},Commission,Flipkart Electronics Sale,₹150.00,₹150.00
+{datetime.utcnow().strftime('%Y-%m-%d')},Commission,Amazon Fashion Sale,₹200.00,₹350.00
+{datetime.utcnow().strftime('%Y-%m-%d')},Payout,Gift Card Issued,-₹500.00,-₹150.00
+"""
+    
+    return {
+        "csv_data": csv_data,
+        "filename": f"ledger_export_{tenant_id}_{datetime.utcnow().strftime('%Y%m%d')}.csv",
+        "total_rows": 3
+    }
+
+@app.post("/v1/webhooks/conversion", tags=["Events & Webhooks"])
+async def receive_conversion_webhook(request: ConversionWebhookRequest):
+    """Receive conversion webhook from Trackier - demo implementation"""
+    # Simulate webhook processing
+    webhook_data = {
+        "received_at": datetime.utcnow().isoformat(),
+        "click_id": request.click_id,
+        "offer_id": request.offer_id,
+        "sale_amount": request.sale_amount,
+        "order_id": request.order_id,
+        "status": request.status,
+        "processed": True
+    }
+    
+    return {
+        "status": "received",
+        "webhook_id": f"webhook_{uuid.uuid4().hex[:8]}",
+        "data": webhook_data
+    }
+
+@app.post("/v1/webhooks/payout_status", tags=["Events & Webhooks"])
+async def send_payout_status_webhook():
+    """Send payout status webhook - demo implementation"""
+    # Simulate sending webhook
+    webhook_data = {
+        "payout_id": f"payout_{uuid.uuid4().hex[:8]}",
+        "status": "completed",
+        "amount": 500.0,
+        "method": "gift_card",
+        "reference_id": "DEMO-GV-CODE-1234",
+        "sent_at": datetime.utcnow().isoformat()
+    }
+    
+    return {
+        "status": "sent",
+        "webhook_data": webhook_data,
+        "message": "Payout status webhook sent successfully"
+    }
 
 # Vercel compatibility - export the app for serverless deployment
 if __name__ == "__main__":

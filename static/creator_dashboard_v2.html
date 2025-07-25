@@ -179,6 +179,17 @@
           </div>
         </div>
 
+        <!-- Per-Offer Reward Control -->
+        <div class="bg-white rounded-lg shadow p-6 mb-6">
+          <h3 class="text-lg font-semibold mb-4">💰 Per-Offer Reward Control</h3>
+          <div id="offer-rewards-container">
+            <div class="text-center py-8">
+              <div class="loading-spinner mx-auto mb-2"></div>
+              <div class="text-gray-500">Loading offers...</div>
+            </div>
+          </div>
+        </div>
+
         <!-- Widget Generation -->
         <div class="bg-white rounded-lg shadow p-6 mb-6">
           <h3 class="text-lg font-semibold mb-4">🎨 Generate Widgets</h3>
@@ -497,6 +508,7 @@
         populateOffersSelect('campaign-offer');
         populateOffersSelect('link-offer');
         populateOfferCheckboxes(); // Populate widget offer checkboxes
+        populateOfferRewards(); // Populate offer reward sliders
       } catch (error) {
         console.error('Failed to load offers:', error);
         currentData.offers = [];
@@ -1043,6 +1055,88 @@
           <span class="text-sm">${offer.brand} - ${offer.category}</span>
         </label>
       `).join('');
+    }
+
+    // Populate offer reward sliders
+    function populateOfferRewards() {
+      const container = document.getElementById('offer-rewards-container');
+      if (!container || !currentData.offers) return;
+
+      container.innerHTML = currentData.offers.map(offer => `
+        <div class="border rounded-lg p-4 mb-4">
+          <div class="flex justify-between items-center mb-3">
+            <div>
+              <h4 class="font-medium">${offer.brand} - ${offer.category}</h4>
+              <p class="text-sm text-gray-600">Base Commission: ${offer.base_commission_pct}%</p>
+            </div>
+            <span class="text-lg font-bold text-blue-600" id="reward-display-${offer.offer_id}">40%</span>
+          </div>
+          <div class="space-y-2">
+            <div class="flex justify-between text-sm text-gray-600">
+              <span>0%</span>
+              <span>100%</span>
+            </div>
+            <input 
+              type="range" 
+              min="0" 
+              max="100" 
+              value="40" 
+              class="w-full h-2 bg-gray-200 rounded-lg appearance-none cursor-pointer slider"
+              data-offer-id="${offer.offer_id}"
+              oninput="updateRewardDisplay('${offer.offer_id}', this.value)"
+            >
+            <div class="flex justify-between">
+              <button onclick="saveRewardRate('${offer.offer_id}')" class="bg-blue-600 text-white px-3 py-1 rounded text-sm hover:bg-blue-700">
+                Save Rate
+              </button>
+              <button onclick="resetRewardRate('${offer.offer_id}')" class="bg-gray-600 text-white px-3 py-1 rounded text-sm hover:bg-gray-700">
+                Reset
+              </button>
+            </div>
+          </div>
+        </div>
+      `).join('');
+    }
+
+    // Update reward display
+    function updateRewardDisplay(offerId, value) {
+      const display = document.getElementById(`reward-display-${offerId}`);
+      if (display) {
+        display.textContent = `${value}%`;
+      }
+    }
+
+    // Save reward rate
+    async function saveRewardRate(offerId) {
+      const slider = document.querySelector(`input[data-offer-id="${offerId}"]`);
+      const rate = slider.value;
+      
+      try {
+        const response = await fetch(`${API_BASE}/creator/offers/${offerId}/reward_rate`, {
+          method: 'POST',
+          headers: {
+            'Content-Type': 'application/json',
+            'Authorization': AUTH_TOKEN
+          },
+          body: JSON.stringify({ reward_rate: parseFloat(rate) })
+        });
+        
+        if (response.ok) {
+          alert(`Reward rate updated to ${rate}% for offer ${offerId}`);
+        } else {
+          alert('Failed to update reward rate');
+        }
+      } catch (error) {
+        console.error('Error updating reward rate:', error);
+        alert('Error updating reward rate');
+      }
+    }
+
+    // Reset reward rate
+    function resetRewardRate(offerId) {
+      const slider = document.querySelector(`input[data-offer-id="${offerId}"]`);
+      slider.value = 40;
+      updateRewardDisplay(offerId, 40);
     }
 
     // Start the dashboard
