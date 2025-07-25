@@ -16,6 +16,30 @@ from models import *
 from payout_simulator import payout_simulator
 from edge_redirector import edge_redirector
 
+# JWT Dependency for Creator Authentication
+async def get_creator_tenant_id(authorization: str = Header(...)) -> str:
+    """
+    Extract tenant_id from JWT token for creator authentication
+    """
+    if not authorization.startswith("Bearer "):
+        raise HTTPException(status_code=401, detail="Invalid authorization header")
+    
+    token = authorization.replace("Bearer ", "")
+    
+    # For mock implementation, extract tenant_id from token
+    # In production, this would decode and verify the JWT
+    if token.startswith("mock_jwt_creator_"):
+        # Extract tenant_id from the token format: mock_jwt_creator_<tenant_id>
+        if "tnt_101" in token:
+            return "tnt_101"
+        elif "7fac09b7-dc03-47a7-8352-d805863f62d8" in token:
+            return "tnt_b373c646"
+        else:
+            # Try to extract from the token or use a default
+            return "tnt_101"  # Default for testing - use the actual tenant ID
+    else:
+        raise HTTPException(status_code=401, detail="Invalid JWT token")
+
 # Initialize FastAPI app
 app = FastAPI(
     title="Hissaback Platform API",
@@ -254,29 +278,7 @@ if __name__ == "__main__":
     import uvicorn
     uvicorn.run(app, host="0.0.0.0", port=8001)
 
-# JWT Dependency for Creator Authentication
-async def get_creator_tenant_id(authorization: str = Header(...)) -> str:
-    """
-    Extract tenant_id from JWT token for creator authentication
-    """
-    if not authorization.startswith("Bearer "):
-        raise HTTPException(status_code=401, detail="Invalid authorization header")
-    
-    token = authorization.replace("Bearer ", "")
-    
-    # For mock implementation, extract tenant_id from token
-    # In production, this would decode and verify the JWT
-    if token.startswith("mock_jwt_creator_"):
-        # Extract tenant_id from the token format: mock_jwt_creator_<tenant_id>
-        if "tnt_101" in token:
-            return "tnt_101"
-        elif "7fac09b7-dc03-47a7-8352-d805863f62d8" in token:
-            return "tnt_b373c646"
-        else:
-            # Try to extract from the token or use a default
-            return "tnt_101"  # Default for testing - use the actual tenant ID
-    else:
-        raise HTTPException(status_code=401, detail="Invalid JWT token")
+
 
 # Data Models
 class CreatorSignupRequest(BaseModel):
